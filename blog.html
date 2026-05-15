@@ -1,3 +1,21 @@
+<!-- ── Nav ── -->
+<!--
+// Nav
+// Reveal on scroll
+// Filter
+-->
+<!-- ── Filter bar ── -->
+<!--
+// Filter
+-->
+<!-- ── Blog grid ── -->
+<!--
+// Blog grid
+-->
+<!-- ── Featured card (first post, full width) ── -->
+<!--
+// Featured card
+-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -161,7 +179,7 @@ footer{background:var(--surface-1);border-top:1px solid var(--stroke);padding:1.
 <!-- ── Filter bar ── -->
 <div class="filter-bar">
   <div class="filter-inner">
-    <button class="filter-btn active" data-filter="all">All Posts <span class="filter-count" id="count-all">3</span></button>
+    <button class="filter-btn active" data-filter="all">All Posts <span class="filter-count" id="count-all">5</span></button>
     <button class="filter-btn" data-filter="infrastructure">Research Infrastructure <span class="filter-count" id="count-infrastructure">1</span></button>
     <button class="filter-btn" data-filter="hpc">HPC &amp; Systems <span class="filter-count" id="count-hpc">2</span></button>
     <button class="filter-btn" data-filter="ml">Scientific ML <span class="filter-count" id="count-ml">2</span></button>
@@ -220,7 +238,7 @@ footer{background:var(--surface-1);border-top:1px solid var(--stroke);padding:1.
 
     <!-- POST 2: DER LLM Framework -->
     <a href="der-llm-blog-post.html" class="blog-card reveal d1" data-category="infrastructure ml energy">
-      <img src="images/der_titlecard.png" alt="DER LLM Titlecard" class="blog-card-img" />
+      <img src="images/arch.png" alt="DER LLM Titlecard" class="blog-card-img" />
       <div class="blog-card-body">
         <div class="blog-card-venue">LLM Deployment &nbsp;&middot;&nbsp; Energy Systems</div>
         <div class="blog-card-title">Containerized and Accountable: LLM Deployment for Critical Infrastructure</div>
@@ -255,7 +273,7 @@ footer{background:var(--surface-1);border-top:1px solid var(--stroke);padding:1.
           <span class="tag">Containers</span>
         </div>
         <div class="blog-card-footer">
-          <span class="blog-card-meta">April 2026 &nbsp;&middot;&nbsp; 9 min read</span>
+          <span class="blog-card-meta">2026 &nbsp;&middot;&nbsp; 9 min read</span>
           <span class="blog-card-read">
             Read post
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
@@ -265,11 +283,33 @@ footer{background:var(--surface-1);border-top:1px solid var(--stroke);padding:1.
     </a>
 
 
-    <!-- POST: Quantum Serverless (featured, full width) -->
-    <a href="quantum-serverless-blog.html" class="blog-card featured reveal d3" data-category="quantum cloud ml">
-      <div style="width:100%;height:100%;background:var(--surface-2);display:flex;align-items:stretch;">
-        <img src="images/quantum-blog-title-card.png" alt="Quantum Serverless Titlecard" class="blog-card-img" style="width:100%;height:100%;object-fit:cover;object-position:center;" />
+
+    <!-- POST 4: Assumption Mismatch -->
+    <a href="assumption-mismatch-blog.html" class="blog-card reveal d4" data-category="ml hpc">
+      <img src="images/algo_mismatch.png" alt="Assumption Mismatch Titlecard" class="blog-card-img" />
+      <div class="blog-card-body">
+        <div class="blog-card-venue">Scientific ML &nbsp;&middot;&nbsp; HPC &amp; Systems</div>
+        <div class="blog-card-title">Assumption Mismatch: What Scientific Algorithms Expect and What Systems Deliver</div>
+        <div class="blog-card-excerpt">Scientific algorithms carry implicit contracts with the systems that run them. CI/CD pipelines, HPC schedulers, cloud orchestration, and quantum queues were not designed to honor those contracts. Explore the gap and how to bridge it.</div>
+        <div class="tag-row">
+          <span class="tag">Assumption Mismatch</span>
+          <span class="tag">Scientific ML</span>
+          <span class="tag">HPC</span>
+          <span class="tag">Cloud</span>
+        </div>
+        <div class="blog-card-footer">
+          <span class="blog-card-meta">2026 &nbsp;&middot;&nbsp; 11 min read</span>
+          <span class="blog-card-read">
+            Read post
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </span>
+        </div>
       </div>
+    </a>
+
+    <!-- POST 5: Quantum Serverless -->
+    <a href="quantum-serverless-blog.html" class="blog-card reveal d5" data-category="quantum cloud ml">
+      <img src="images/quantum-blog-title-card.png" alt="Quantum Serverless Titlecard" class="blog-card-img" />
       <div class="blog-card-body">
         <div class="blog-card-venue">Quantum Computing &nbsp;&middot;&nbsp; Cloud</div>
         <div class="blog-card-title">Quantum Serverless: Scalable Quantum Workflows</div>
@@ -281,7 +321,7 @@ footer{background:var(--surface-1);border-top:1px solid var(--stroke);padding:1.
           <span class="tag">Containers</span>
         </div>
         <div class="blog-card-footer">
-          <span class="blog-card-meta">May 2026 &nbsp;&middot;&nbsp; 7 min read</span>
+          <span class="blog-card-meta">2026 &nbsp;&middot;&nbsp; 7 min read</span>
           <span class="blog-card-read">
             Read post
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
@@ -290,14 +330,12 @@ footer{background:var(--surface-1);border-top:1px solid var(--stroke);padding:1.
       </div>
     </a>
 
-    <!-- PLACEHOLDER: Add future posts below this line using class="blog-card" -->
+    <!-- Empty state shown when a filter returns no results -->
+    <div class="empty-state" id="emptyState" style="display:none">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="1.4" stroke-linecap="round" style="margin:0 auto 0.75rem"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/></svg>
+      <p>No posts in this category yet. Check back soon.</p>
+    </div>
 
-  </div>
-
-  <!-- Empty state shown when a filter returns no results -->
-  <div class="empty-state" id="emptyState" style="display:none">
-    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="1.4" stroke-linecap="round" style="margin:0 auto 0.75rem"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/></svg>
-    <p>No posts in this category yet. Check back soon.</p>
   </div>
 
 </div>
