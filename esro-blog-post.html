@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Energy Systems Runtime Observatory (ESRO) · Jaya Preethi Mohan</title>
+<meta name="description" content="A lightweight, open source real time monitoring platform for unified observability across local machines, Docker containers, and HPC clusters." />
+<meta name="author" content="Jaya Preethi Mohan" />
+<meta property="og:title" content="Energy Systems Runtime Observatory (ESRO)" />
+<meta property="og:description" content="Unified observability for scientific AI workflows across heterogeneous compute environments." />
+<meta property="og:type" content="article" />
+<meta property="og:image" content="images/esro.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+:root {
+  --surface-0: #F4F6F9;
+  --surface-1: #FFFFFF;
+  --surface-2: #EEF1F6;
+  --stroke: #DDE2EC;
+  --stroke-md: #C8CFE0;
+  --grn: #1C5F43;
+  --grn-mid: #237A54;
+  --grn-light: #E8F4EF;
+  --grn-xlight: #F2FAF6;
+  --gld: #8B6914;
+  --gld-light: #FBF5E6;
+  --ink-0: #111827;
+  --ink-1: #374151;
+  --ink-2: #6B7280;
+  --ink-3: #9CA3AF;
+  --serif: 'DM Serif Display', Georgia, serif;
+  --sans: 'Inter', system-ui, sans-serif;
+  --mono: 'JetBrains Mono', 'Courier New', monospace;
+  --nav-h: 64px;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:var(--sans);background:var(--surface-0);color:var(--ink-1);line-height:1.7;font-weight:400;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+::selection{background:var(--grn-light);color:var(--grn)}
+.container{max-width:1100px;margin:0 auto;padding:0 2rem}
+a{color:var(--grn);text-decoration:none;transition:color .2s}
+a:hover{color:var(--gld)}
+.icon{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+.icon svg{width:100%;height:100%;fill:currentColor}
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);background:rgba(255,255,255,0.92);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--stroke)}
+nav .inner{max-width:1100px;margin:0 auto;padding:0 2rem;height:100%;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{font-family:var(--sans);font-size:0.82rem;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;color:var(--ink-0)}
+.nav-logo em{font-style:normal;color:var(--grn)}
+.nav-links{display:flex;gap:2rem;list-style:none}
+.nav-links a{font-size:0.72rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-2);position:relative;transition:color .2s}
+.nav-links a::after{content:'';position:absolute;bottom:-6px;left:0;width:0;height:1.5px;background:var(--grn);transition:width .3s ease}
+.nav-links a:hover{color:var(--grn)}
+.nav-links a:hover::after{width:100%}
+.hamburger{display:none;background:none;border:none;cursor:pointer;width:24px;height:16px;position:relative}
+.hamburger span{display:block;width:100%;height:1.5px;background:var(--ink-0);position:absolute;left:0;transition:all .3s}
+.hamburger span:nth-child(1){top:0}.hamburger span:nth-child(2){top:7px}.hamburger span:nth-child(3){top:14px}
+.hamburger.open span:nth-child(1){top:7px;transform:rotate(45deg)}
+.hamburger.open span:nth-child(2){opacity:0}
+.hamburger.open span:nth-child(3){top:7px;transform:rotate(-45deg)}
+.blog-hero{padding-top:calc(var(--nav-h) + 5rem);padding-bottom:4.2rem;background:var(--surface-1);border-bottom:1px solid var(--stroke);position:relative;overflow:hidden}
+.blog-hero::before{content:'';position:absolute;top:-220px;left:-160px;width:520px;height:520px;background:radial-gradient(circle,rgba(28,95,67,0.08) 0%,transparent 67%);pointer-events:none}
+.back-link{display:inline-flex;font-family:var(--mono);font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-3);margin-bottom:1.4rem}
+.back-link:hover{color:var(--grn)}
+.blog-title{font-family:var(--serif);font-size:clamp(2.25rem,5.5vw,4.8rem);font-weight:400;color:var(--ink-0);line-height:1.05;max-width:930px;margin-bottom:1.1rem}
+.blog-title em{font-style:italic;color:var(--grn)}
+.blog-sub{font-size:0.98rem;color:var(--ink-2);line-height:1.85;max-width:740px;margin-bottom:1.4rem}
+.blog-main{padding:4.6rem 0 5.5rem}
+.blog-grid{display:grid;grid-template-columns:minmax(0,1fr) 250px;gap:3rem;align-items:start}
+.article-card{background:var(--surface-1);border:1px solid var(--stroke);padding:clamp(1.8rem,4vw,4rem);box-shadow:0 6px 24px rgba(0,0,0,0.04)}
+.article-card h2{font-family:var(--serif);font-size:clamp(1.75rem,3vw,2.35rem);font-weight:400;color:var(--ink-0);line-height:1.16;margin:3.1rem 0 1rem}
+.article-card h2:first-child{margin-top:0}
+.article-card h3{font-family:var(--sans);font-size:0.92rem;font-weight:600;color:var(--grn);margin:1.9rem 0 0.55rem}
+.article-card p{font-size:0.94rem;color:var(--ink-1);line-height:1.9;margin-bottom:1rem}
+.article-card ul{margin:0 0 1.3rem 1.2rem}
+.article-card li{font-size:0.9rem;color:var(--ink-1);margin-bottom:0.45rem}
+.callout{margin:2rem 0;padding:1.35rem 1.55rem;background:var(--grn-xlight);border-left:3px solid var(--grn);color:var(--grn);font-family:var(--serif);font-size:1.3rem;line-height:1.45}
+.figure{margin:2.2rem 0;background:var(--surface-1);border:1px solid var(--stroke);padding:0.75rem}
+.figure img{display:block;width:100%;height:auto}
+.caption{font-family:var(--mono);font-size:0.58rem;letter-spacing:0.04em;color:var(--ink-3);margin-top:0.65rem;padding:0 0.2rem}
+.sidebar{position:sticky;top:calc(var(--nav-h) + 2rem);background:var(--surface-1);border:1px solid var(--stroke);padding:1.35rem}
+.sidebar-title{font-family:var(--mono);font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--grn);margin-bottom:0.8rem}
+.sidebar a{display:block;font-size:0.78rem;color:var(--ink-2);padding:0.62rem 0;border-bottom:1px solid var(--stroke)}
+.sidebar a:last-child{border-bottom:none}
+.sidebar a:hover{color:var(--grn)}
+.author-note{margin-top:2.5rem;padding-top:1.4rem;border-top:1px solid var(--stroke);font-family:var(--mono);font-size:0.6rem;letter-spacing:0.04em;color:var(--ink-3)}
+footer{background:var(--surface-1);border-top:1px solid var(--stroke);padding:1.6rem 0;text-align:center}
+.foot-txt{font-family:var(--mono);font-size:0.6rem;letter-spacing:0.04em;color:var(--ink-3)}
+.foot-txt em{font-style:normal;color:var(--grn)}
+@media (max-width: 960px) {
+  .blog-grid { grid-template-columns: 1fr; }
+  .sidebar { position: static; order: -1; }
+}
+@media (max-width: 640px) {
+  nav .inner { padding: 0 1.2rem; }
+  .container { padding: 0 1.2rem; }
+  .nav-links {
+    display: none; flex-direction: column; gap: 1.5rem;
+    position: fixed; top: var(--nav-h); left: 0; right: 0; bottom: 0;
+    background: var(--surface-1); padding: 2rem;
+    border-top: 1px solid var(--stroke); z-index: 190;
+  }
+  .nav-links.open { display: flex; }
+  .hamburger { display: block; }
+  .blog-hero { padding-top: calc(var(--nav-h) + 3rem); padding-bottom: 3rem; }
+  .blog-title { font-size: 2.45rem; }
+  .article-card { padding: 1.45rem; }
+}
+</style>
+</head>
+<body>
+<nav>
+  <div class="inner">
+    <a href="index.html#top" class="nav-logo">Jay<em>.</em>Mohan</a>
+    <button class="hamburger" id="ham" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html#about">About</a></li>
+      <li><a href="index.html#research">Research</a></li>
+      <li><a href="index.html#experience">Experience</a></li>
+      <li><a href="index.html#skills">Expertise</a></li>
+      <li><a href="index.html#publications">Publications</a></li>
+      <li><a href="blog.html">Blog</a></li>
+      <li><a href="index.html#contact">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+<header class="blog-hero">
+  <div class="container">
+    <a class="back-link" href="blog.html">← Back to blog</a>
+    <h1 class="blog-title">Energy Systems Runtime Observatory (ESRO)</h1>
+    <p class="blog-sub">A lightweight, open source real time monitoring platform providing unified observability across local machines, Docker containers, and HPC clusters. Built to address the visibility gap that standard infrastructure tools leave open for scientific AI workflows running across heterogeneous compute environments.</p>
+    <a href="blog.html" style="display:inline-block;margin-top:1.2rem;padding:1.1rem 1.5rem;background:var(--surface-2);border:1px solid var(--stroke);border-radius:7px;text-decoration:none;color:var(--grn);transition:box-shadow .2s;font-family:var(--serif);font-size:1.1rem;font-weight:500;">Research Blogs</a>
+  </div>
+</header>
+<main class="blog-main">
+  <div class="container">
+    <div class="blog-grid">
+      <article class="article-card">
+        <figure class="figure">
+          <img src="images/esro.png" alt="ESRO logo" />
+          <figcaption class="caption">ESRO: Unified observability for scientific AI workflows across local, container, and HPC environments.</figcaption>
+        </figure>
+        <h2 id="motivation">Motivation</h2>
+        <p>Scientific AI and energy systems research increasingly require running experiments across a mix of local machines, Docker containers, and high-performance computing (HPC) clusters. However, standard monitoring tools rarely provide a unified, real-time view across all these environments. This lack of observability can lead to missed bottlenecks, harder debugging, and challenges in reproducing results.</p>
+        <h2 id="what-is-esro">What is ESRO?</h2>
+        <p><strong>Energy Systems Runtime Observatory (ESRO)</strong> is an <a href="https://github.com/Jayapreethi/energy-system-runtime-observatory" target="_blank">open source</a> platform for unified, real-time monitoring of scientific workflows. ESRO brings together metrics from local systems, Docker containers, and remote HPC jobs, providing a single dashboard for resource usage, process health, and system metrics.</p>
+        <ul>
+          <li><strong>Unified Monitoring:</strong> Real-time metrics from local, container, and HPC jobs.</li>
+          <li><strong>Lightweight & Extensible:</strong> Minimal overhead, easy deployment, and plugin support for new metrics or environments.</li>
+          <li><strong>Open Source:</strong> Built with Streamlit, psutil, and standard Python libraries for transparency and accessibility.</li>
+        </ul>
+        <figure class="figure">
+          <img src="images/esro_arch_flow.png.png" alt="ESRO Architecture Flow" />
+          <figcaption class="caption">Figure 1: ESRO Architecture Flow</figcaption>
+        </figure>
+        <h2 id="quickstart">Quickstart</h2>
+        <ol>
+          <li>
+            <strong>Clone the repository:</strong><br>
+            <code>git clone https://github.com/Jayapreethi/energy-system-runtime-observatory.git</code>
+          </li>
+          <li>
+            <strong>Install dependencies:</strong><br>
+            <code>pip install -r requirements.txt</code>
+          </li>
+          <li>
+            <strong>Run the dashboard using Streamlit:</strong><br>
+            <code>streamlit run dashboard.py</code>
+          </li>
+        </ol>
+        <figure class="figure">
+          <img src="images/display.png" alt="ESRO Dashboard Display" />
+          <figcaption class="caption">Figure 2: ESRO Dashboard Display</figcaption>
+        </figure>
+        <h2 id="features">Key Features</h2>
+        <ul>
+          <li>Live dashboards for CPU, memory, GPU, and network usage.</li>
+          <li>Process-level monitoring and anomaly detection.</li>
+          <li>Support for Docker, SLURM, and custom HPC schedulers.</li>
+          <li>Exportable logs for reproducibility and audit trails.</li>
+        </ul>
+        <figure class="figure">
+          <img src="images/metrics.png" alt="ESRO Metrics Timeline Example" />
+          <figcaption class="caption">Figure 3: ESRO Metrics Timeline Example</figcaption>
+        </figure>
+        <h2 id="usage">Usage</h2>
+        <ul>
+          <li>Open the dashboard in your browser (Streamlit provides a local URL).</li>
+          <li>Use the sidebar to enable local system monitoring or connect to an HPC cluster.</li>
+          <li>For HPC jobs, enter your SSH credentials in the sidebar or use the example config below.</li>
+        </ul>
+        <h3 id="example-hpc-config">Example HPC Config</h3>
+        <p>Reference JSON for HPC connection (see <code>example_hpc_config.json</code>):</p>
+        <pre style="background:var(--surface-2);padding:0.8em 1em;border-radius:6px;font-size:0.95em;overflow-x:auto"><code>{
+  "host": "talon.und.edu",
+  "username": "your_username",
+  "password": "your_password"
+}</code></pre>
+        <h2 id="impact">Why ESRO Matters</h2>
+        <ul>
+          <li>Improves experiment reproducibility and reliability by capturing full infrastructure context.</li>
+          <li>Accelerates debugging and performance tuning with real-time, unified metrics.</li>
+          <li>Enables sharing of infrastructure and runtime context for published results.</li>
+        </ul>
+        <div class="callout">ESRO closes the observability gap for scientific AI, making complex, distributed workflows more transparent and reproducible.</div>
+        <p class="author-note">Written by Jaya Preethi Mohan. <a href="https://github.com/Jayapreethi/energy-system-runtime-observatory" target="_blank">View the ESRO GitHub repository</a> · <a href="blog.html">Back to blog index</a></p>
+      </article>
+      <aside class="sidebar">
+        <div class="sidebar-title">On this page</div>
+        <a href="#motivation">Motivation</a>
+        <a href="#what-is-esro">What is ESRO?</a>
+        <a href="#key-features">Key Features</a>
+        <a href="#sample-use-case">Sample Use Case</a>
+        <a href="#impact">Impact</a>
+      </aside>
+    </div>
+  </div>
+</main>
+<footer>
+  <div class="container">
+    <p class="foot-txt">© 2026 <em>Jaya Preethi Mohan</em> · AI / ML · Energy Systems · Scientific Computing</p>
+  </div>
+</footer>
+<script>
+const ham = document.getElementById('ham');
+const nl  = document.getElementById('navLinks');
+if (ham && nl) {
+  ham.addEventListener('click', () => { ham.classList.toggle('open'); nl.classList.toggle('open'); });
+  nl.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+    ham.classList.remove('open'); nl.classList.remove('open');
+  }));
+}
+</script>
+</body>
+</html>

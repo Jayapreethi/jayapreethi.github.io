@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Containerized ML Is Not the Same as Reproducible ML · Jaya Preethi Mohan</title>
+<meta name="description" content="Why containerized machine learning improves environment portability but does not automatically guarantee reproducible scientific results." />
+<meta name="author" content="Jaya Preethi Mohan" />
+<meta property="og:title" content="Containerized ML Is Not the Same as Reproducible ML" />
+<meta property="og:description" content="Why scientific AI workflows need more than dependency isolation." />
+<meta property="og:type" content="article" />
+<meta property="og:image" content="images/b1a.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --surface-0:#F4F6F9;--surface-1:#FFFFFF;--surface-2:#EEF1F6;
+  --stroke:#DDE2EC;--stroke-md:#C8CFE0;
+  --grn:#1C5F43;--grn-mid:#237A54;--grn-light:#E8F4EF;--grn-xl:#F2FAF6;
+  --gld:#8B6914;--gld-light:#FBF5E6;
+  --ink-0:#111827;--ink-1:#374151;--ink-2:#6B7280;--ink-3:#9CA3AF;
+  --serif:'DM Serif Display',Georgia,serif;
+  --sans:'Inter',system-ui,sans-serif;
+  --mono:'JetBrains Mono','Courier New',monospace;
+  --nav-h:64px
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:var(--sans);background:var(--surface-0);color:var(--ink-1);line-height:1.7;font-weight:400;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+::selection{background:var(--grn-light);color:var(--grn)}
+.container{max-width:1100px;margin:0 auto;padding:0 2rem}
+a{color:var(--grn);text-decoration:none;transition:color .2s}
+a:hover{color:var(--gld)}
+
+/* ── Nav ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);background:rgba(255,255,255,0.92);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--stroke)}
+nav .inner{max-width:1100px;margin:0 auto;padding:0 2rem;height:100%;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{font-family:var(--sans);font-size:0.82rem;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;color:var(--ink-0)}
+.nav-logo em{font-style:normal;color:var(--grn)}
+.nav-links{display:flex;gap:2rem;list-style:none}
+.nav-links a{font-size:0.72rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-2);position:relative;transition:color .2s}
+.nav-links a::after{content:'';position:absolute;bottom:-6px;left:0;width:0;height:1.5px;background:var(--grn);transition:width .3s ease}
+.nav-links a:hover,.nav-links a.active{color:var(--grn)}
+.nav-links a:hover::after,.nav-links a.active::after{width:100%}
+.hamburger{display:none;background:none;border:none;cursor:pointer;width:24px;height:16px;position:relative}
+.hamburger span{display:block;width:100%;height:1.5px;background:var(--ink-0);position:absolute;left:0;transition:all .3s}
+.hamburger span:nth-child(1){top:0}.hamburger span:nth-child(2){top:7px}.hamburger span:nth-child(3){top:14px}
+.hamburger.open span:nth-child(1){top:7px;transform:rotate(45deg)}
+.hamburger.open span:nth-child(2){opacity:0}
+.hamburger.open span:nth-child(3){top:7px;transform:rotate(-45deg)}
+
+/* ── Post hero ── */
+.post-hero{padding-top:var(--nav-h);background:var(--surface-1);border-bottom:1px solid var(--stroke);position:relative;overflow:hidden}
+.post-hero::before{content:'';position:absolute;top:-220px;left:-160px;width:520px;height:520px;background:radial-gradient(circle,rgba(28,95,67,0.07) 0%,transparent 67%);pointer-events:none}
+.post-hero-inner{max-width:1100px;margin:0 auto;padding:4rem 2rem 3.5rem;position:relative}
+.post-back{font-family:var(--mono);font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-3);display:inline-flex;align-items:center;gap:0.4rem;margin-bottom:1.2rem;transition:color .2s}
+.post-back:hover{color:var(--grn)}
+.post-eye{font-family:var(--mono);font-size:0.62rem;font-weight:500;letter-spacing:0.16em;text-transform:uppercase;color:var(--grn);margin-bottom:0.55rem;display:flex;align-items:center;gap:0.5rem}
+.post-eye::before{content:'//';color:var(--ink-3)}
+.post-title{font-family:var(--serif);font-size:clamp(2.1rem,4vw,3.6rem);font-weight:400;color:var(--ink-0);line-height:1.1;max-width:860px;margin-bottom:1rem}
+.post-title em{font-style:italic;color:var(--grn)}
+.post-sub{font-size:0.96rem;color:var(--ink-2);line-height:1.85;max-width:700px;margin-bottom:1.4rem}
+.post-meta-line{font-family:var(--mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gld);margin-bottom:1rem}
+.tag-row{display:flex;flex-wrap:wrap;gap:0.35rem}
+.tag{font-family:var(--mono);font-size:0.56rem;letter-spacing:0.04em;padding:0.24rem 0.55rem;background:var(--grn-xl);color:var(--grn);border:1px solid rgba(28,95,67,0.12)}
+.tag.gld{background:var(--gld-light);color:var(--gld);border-color:rgba(139,105,20,0.15)}
+
+/* ── Layout ── */
+.post-body{max-width:1100px;margin:0 auto;padding:4rem 2rem 5.5rem;display:grid;grid-template-columns:minmax(0,1fr) 250px;gap:3rem;align-items:start}
+.post-sidebar{position:sticky;top:calc(var(--nav-h) + 2rem)}
+
+/* ── Article ── */
+.article-card{background:var(--surface-1);border:1px solid var(--stroke);padding:clamp(1.8rem,4vw,3.5rem)}
+.article-card h2{font-family:var(--serif);font-size:clamp(1.65rem,2.8vw,2.2rem);font-weight:400;color:var(--ink-0);line-height:1.18;margin:3rem 0 1rem}
+.article-card h2:first-child{margin-top:0}
+.article-card h3{font-family:var(--sans);font-size:0.88rem;font-weight:600;color:var(--grn);letter-spacing:0.01em;margin:1.8rem 0 0.5rem}
+.article-card p{font-size:0.93rem;color:var(--ink-1);line-height:1.9;margin-bottom:1rem}
+.article-card p strong{color:var(--ink-0);font-weight:600}
+.callout{margin:1.8rem 0;padding:1.25rem 1.5rem;background:var(--grn-xl);border-left:3px solid var(--grn);font-family:var(--serif);font-size:1.2rem;line-height:1.5;color:var(--grn)}
+.check-list{list-style:none;margin:0 0 1.4rem;padding:0;display:flex;flex-direction:column;gap:0.5rem}
+.check-list li{font-size:0.9rem;color:var(--ink-1);padding-left:1.1rem;position:relative;line-height:1.75}
+.check-list li::before{content:'›';position:absolute;left:0;color:var(--grn);font-weight:600}
+
+/* ── Figures ── */
+.fig{margin:2rem 0;background:var(--surface-1);border:1px solid var(--stroke);overflow:hidden}
+.fig img{display:block;width:100%;height:auto}
+.fig svg{display:block;width:100%}
+.fig-caption{font-family:var(--mono);font-size:0.58rem;letter-spacing:0.04em;color:var(--ink-3);padding:0.6rem 0.85rem;border-top:1px solid var(--stroke)}
+
+/* ── Levels grid ── */
+.level-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--stroke);border:1px solid var(--stroke);margin:1.25rem 0 1.5rem}
+.level-card{background:var(--surface-1);padding:1.2rem 1.3rem;transition:background .2s}
+.level-card:hover{background:var(--grn-xl)}
+.level-num{font-family:var(--mono);font-size:0.58rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--gld);margin-bottom:0.3rem}
+.level-title{font-family:var(--serif);font-size:0.98rem;color:var(--ink-0);line-height:1.3;margin-bottom:0.4rem}
+.level-body{font-size:0.8rem;color:var(--ink-2);line-height:1.7}
+
+/* ── Cite superscript ── */
+sup.cite a{font-family:var(--mono);font-size:0.6rem;color:var(--grn);vertical-align:super;line-height:0;font-weight:600}
+sup.cite a:hover{color:var(--gld)}
+
+/* ── References section ── */
+.references{margin-top:3rem;padding-top:2rem;border-top:2px solid var(--grn)}
+.references h2{font-family:var(--serif);font-size:1.5rem;color:var(--ink-0);margin-bottom:1.25rem}
+.ref-list{list-style:none;padding:0;display:flex;flex-direction:column;gap:0.85rem}
+.ref-list li{font-size:0.82rem;color:var(--ink-2);line-height:1.75;padding-left:2rem;position:relative}
+.ref-list li .ref-num{position:absolute;left:0;font-family:var(--mono);font-size:0.72rem;font-weight:600;color:var(--grn)}
+.ref-list li a{color:var(--grn);word-break:break-all}
+.ref-list li a:hover{color:var(--gld)}
+.ref-list li em{font-style:italic;color:var(--ink-1)}
+
+/* ── Sidebar ── */
+.sidebar-card{background:var(--surface-1);border:1px solid var(--stroke);padding:1.35rem;margin-bottom:1.1rem}
+.sidebar-label{font-family:var(--mono);font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--grn);margin-bottom:0.8rem}
+.sidebar-card a{display:block;font-size:0.78rem;color:var(--ink-2);padding:0.58rem 0;border-bottom:1px solid var(--stroke)}
+.sidebar-card a:last-child{border-bottom:none}
+.sidebar-card a:hover{color:var(--grn)}
+
+/* ── Author note ── */
+.author-note{margin-top:2.5rem;padding-top:1.4rem;border-top:1px solid var(--stroke);font-family:var(--mono);font-size:0.6rem;letter-spacing:0.04em;color:var(--ink-3)}
+
+/* ── Rule ── */
+.rule{height:1px;background:var(--stroke);margin:2.5rem 0}
+
+/* ── Footer ── */
+footer{background:var(--surface-1);border-top:1px solid var(--stroke);padding:1.6rem 0;text-align:center}
+.foot-txt{font-family:var(--mono);font-size:0.6rem;letter-spacing:0.04em;color:var(--ink-3)}
+.foot-txt em{font-style:normal;color:var(--grn)}
+
+/* ── Reveal ── */
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s ease}
+.reveal.on{opacity:1;transform:none}
+.reveal.d1{transition-delay:.1s}.reveal.d2{transition-delay:.2s}
+
+@media(max-width:960px){.post-body{grid-template-columns:1fr}.post-sidebar{position:static;order:-1}.level-grid{grid-template-columns:1fr}}
+@media(max-width:640px){
+  .nav-links{display:none;flex-direction:column;gap:1.5rem;position:fixed;top:var(--nav-h);left:0;right:0;bottom:0;background:var(--surface-1);padding:2rem;border-top:1px solid var(--stroke);z-index:190}
+  .nav-links.open{display:flex}
+  .hamburger{display:block}
+  .article-card{padding:1.4rem}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="inner">
+    <a href="index.html" class="nav-logo">Jaya Preethi<em>.</em>Mohan</a>
+    <button class="hamburger" id="ham" aria-label="Menu"><span></span><span></span><span></span></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html#about">About</a></li>
+      <li><a href="index.html#research">Research</a></li>
+      <li><a href="index.html#experience">Experience</a></li>
+      <li><a href="index.html#skills">Expertise</a></li>
+      <li><a href="index.html#awards">Awards</a></li>
+      <li><a href="index.html#publications">Publications</a></li>
+      <li><a href="blog.html" class="active">Blog</a></li>
+      <li><a href="index.html#contact">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="post-hero">
+  <div class="post-hero-inner">
+    <a href="blog.html" class="post-back">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      Back to Blog
+    </a>
+    <div class="post-eye">Technical Blog &nbsp;&middot;&nbsp; AI Reproducibility</div>
+    <h1 class="post-title">Containerized ML Is Not the Same as <em>Reproducible ML</em></h1>
+    <p class="post-sub">Containers help preserve software environments, but scientific AI results also depend on hardware, numerical behavior, runtime library choices, workflow provenance, and domain validation. The distinction matters more than most teams acknowledge.</p>
+    <div class="post-meta-line">May 2026 &nbsp;&middot;&nbsp; Scientific ML &nbsp;&middot;&nbsp; HPC &nbsp;&middot;&nbsp; AI Infrastructure</div>
+    <div class="tag-row">
+      <span class="tag">AI Reproducibility</span>
+      <span class="tag">Scientific ML</span>
+      <span class="tag">HPC</span>
+      <span class="tag">Containers</span>
+      <span class="tag">ML Workflows</span>
+    </div>
+  </div>
+</header>
+
+<div class="post-body">
+<main>
+<article class="article-card">
+
+  <!-- ── Fig 1 ── -->
+  <figure class="fig reveal">
+    <!-- Use local image if available; SVG renders if not -->
+    <img src="images/b1a.png" alt="Containerization captures the software environment but reproducibility requires control across the full stack"
+         onerror="this.style.display='none';document.getElementById('svg-fig1').style.display='block'" />
+    <svg id="svg-fig1" viewBox="0 0 740 260" xmlns="http://www.w3.org/2000/svg"
+         font-family="Inter,system-ui,sans-serif" style="display:none">
+      <rect width="740" height="260" fill="#F2FAF6"/>
+      <!-- Container box -->
+      <rect x="40" y="40" width="200" height="180" rx="4" fill="#fff" stroke="#1C5F43" stroke-width="1.5"/>
+      <rect x="40" y="40" width="200" height="34" rx="4" fill="#1C5F43"/>
+      <rect x="40" y="60" width="200" height="14" fill="#1C5F43"/>
+      <text x="140" y="63" text-anchor="middle" font-size="12" fill="white" font-weight="600">Docker Container</text>
+      <!-- Items inside container -->
+      <text x="56" y="100" font-size="10" fill="#374151">✓ Python 3.11</text>
+      <text x="56" y="118" font-size="10" fill="#374151">✓ PyTorch 2.1</text>
+      <text x="56" y="136" font-size="10" fill="#374151">✓ CUDA 12.2</text>
+      <text x="56" y="154" font-size="10" fill="#374151">✓ cuDNN 8.9</text>
+      <text x="56" y="172" font-size="10" fill="#374151">✓ requirements.txt</text>
+      <text x="56" y="190" font-size="10" fill="#374151">✓ source code</text>
+      <!-- Arrow -->
+      <line x1="245" y1="130" x2="295" y2="130" stroke="#9CA3AF" stroke-width="1.5"/>
+      <polygon points="290,125 300,130 290,135" fill="#9CA3AF"/>
+      <!-- Also depends on -->
+      <rect x="300" y="40" width="200" height="180" rx="4" fill="#fff" stroke="#DDE2EC" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="400" y="63" text-anchor="middle" font-size="10.5" fill="#6B7280" font-weight="600">Also depends on</text>
+      <text x="316" y="90" font-size="10" fill="#374151">· GPU model + driver</text>
+      <text x="316" y="108" font-size="10" fill="#374151">· Precision settings</text>
+      <text x="316" y="126" font-size="10" fill="#374151">· cuDNN algorithm choice</text>
+      <text x="316" y="144" font-size="10" fill="#374151">· Reduction order (NCCL)</text>
+      <text x="316" y="162" font-size="10" fill="#374151">· Random seeds</text>
+      <text x="316" y="180" font-size="10" fill="#374151">· Workflow decisions</text>
+      <text x="316" y="198" font-size="10" fill="#374151">· Domain validation</text>
+      <!-- Right arrow -->
+      <line x1="505" y1="130" x2="545" y2="130" stroke="#9CA3AF" stroke-width="1.5"/>
+      <polygon points="540,125 550,130 540,135" fill="#9CA3AF"/>
+      <!-- Result -->
+      <rect x="550" y="90" width="150" height="80" rx="4" fill="#fff" stroke="#DDE2EC" stroke-width="1.5"/>
+      <text x="625" y="122" text-anchor="middle" font-size="11" fill="#1C5F43" font-weight="600">Scientific</text>
+      <text x="625" y="140" text-anchor="middle" font-size="11" fill="#1C5F43" font-weight="600">Result</text>
+      <text x="625" y="158" text-anchor="middle" font-size="9" fill="#6B7280">reproducible?</text>
+      <!-- Labels -->
+      <text x="140" y="238" text-anchor="middle" font-size="9" fill="#1C5F43" font-weight="600">Captured by container</text>
+      <text x="400" y="238" text-anchor="middle" font-size="9" fill="#9CA3AF">Not captured by container</text>
+    </svg>
+    <div class="fig-caption">Fig. 1 &nbsp;&mdash;&nbsp; Containerization captures the software environment. Scientific reproducibility requires control across the full stack, including factors the container does not address.</div>
+  </figure>
+
+  <!-- ── The core problem ── -->
+  <h2 id="core-problem">The Core Problem</h2>
+  <p>Containerization has become one of the most useful practices in modern machine learning and scientific computing. Docker, Singularity, and Apptainer help researchers package code, libraries, and runtime environments so that experiments are easier to move across laptops, institutional clusters, cloud systems, and HPC environments. A 2021 analysis of reproducibility practices across ML research found environment specification to be among the most impactful interventions teams can adopt.<sup class="cite"><a href="#ref1">[1]</a></sup></p>
+  <p>That is a major improvement over the problem of results that only work on the original developer's machine. But there is an important distinction that often gets blurred in how teams talk about reproducibility.</p>
+
+  <div class="callout">A container can help reproduce a software environment. It does not automatically reproduce a scientific result.</div>
+
+  <p>For research teams working with deep learning, physics informed models, simulation workflows, or large-scale HPC systems, this distinction matters practically. Two experiments can use the same code, the same container image, and the same dataset, yet still produce different results because numerical behavior, hardware execution, runtime library choices, and workflow decisions may not be fully controlled by the container.<sup class="cite"><a href="#ref2">[2]</a></sup></p>
+
+  <!-- ── What containers do well ── -->
+  <h2 id="what-containers-do">What Containers Do Well</h2>
+  <p>Containers are genuinely valuable because they make software environments more portable and easier to inspect. They help teams preserve package versions, system libraries, directory structure, configuration files, runtime dependencies, and the basic execution environment in a form that can be shared and rerun.</p>
+  <p>For many engineering workflows, that is sufficient to make deployment more predictable. A web service, a data pipeline, or a build system running in a container today will almost certainly behave the same way next year. The software is the product, and the container captures the software.</p>
+  <p>Scientific machine learning is different. A scientific result depends not only on what software was installed, but also on how the computation was executed. That execution depends on hardware, floating-point precision settings, parallel execution order, choices made by GPU library algorithms at runtime, random seeds, data preprocessing decisions, and the validation methodology used to assess whether the result is correct. The Turing Way handbook describes this as the difference between computational reproducibility and scientific reproducibility.<sup class="cite"><a href="#ref3">[3]</a></sup></p>
+
+  <!-- ── Fig 2 ── -->
+  <figure class="fig reveal">
+    <img src="images/b2a.png" alt="Same container image producing different results on different hardware or runtime configurations"
+         onerror="this.style.display='none';document.getElementById('svg-fig2').style.display='block'" />
+    <svg id="svg-fig2" viewBox="0 0 740 220" xmlns="http://www.w3.org/2000/svg"
+         font-family="Inter,system-ui,sans-serif" style="display:none">
+      <rect width="740" height="220" fill="#F4F6F9"/>
+      <!-- Source container -->
+      <rect x="280" y="20" width="180" height="60" rx="4" fill="#1C5F43"/>
+      <text x="370" y="46" text-anchor="middle" font-size="11" fill="white" font-weight="600">Same Container</text>
+      <text x="370" y="64" text-anchor="middle" font-size="9.5" fill="rgba(255,255,255,0.75)">image sha256:a3f9...</text>
+      <!-- Split arrows -->
+      <line x1="310" y1="80" x2="150" y2="130" stroke="#C8CFE0" stroke-width="1.4"/>
+      <polygon points="148,124 145,135 156,132" fill="#C8CFE0"/>
+      <line x1="370" y1="80" x2="370" y2="130" stroke="#C8CFE0" stroke-width="1.4"/>
+      <polygon points="365,125 370,136 375,125" fill="#C8CFE0"/>
+      <line x1="430" y1="80" x2="590" y2="130" stroke="#C8CFE0" stroke-width="1.4"/>
+      <polygon points="584,124 595,132 592,121" fill="#C8CFE0"/>
+      <!-- Machine A -->
+      <rect x="60" y="134" width="170" height="66" rx="4" fill="#fff" stroke="#DDE2EC" stroke-width="1.2"/>
+      <text x="145" y="153" text-anchor="middle" font-size="9.5" fill="#6B7280">V100 · CUDA 12.2</text>
+      <text x="145" y="168" text-anchor="middle" font-size="9.5" fill="#6B7280">cuDNN 8.9.0</text>
+      <text x="145" y="185" text-anchor="middle" font-size="11" fill="#1C5F43" font-weight="600">Result A: 91.4%</text>
+      <!-- Machine B -->
+      <rect x="280" y="134" width="180" height="66" rx="4" fill="#fff" stroke="#DDE2EC" stroke-width="1.2"/>
+      <text x="370" y="153" text-anchor="middle" font-size="9.5" fill="#6B7280">A100 · CUDA 12.2</text>
+      <text x="370" y="168" text-anchor="middle" font-size="9.5" fill="#6B7280">cuDNN 8.9.3</text>
+      <text x="370" y="185" text-anchor="middle" font-size="11" fill="#1C5F43" font-weight="600">Result B: 91.4%</text>
+      <!-- Machine C -->
+      <rect x="510" y="134" width="170" height="66" rx="4" fill="#fff" stroke="#8B6914" stroke-width="1.2" stroke-dasharray="4,2"/>
+      <text x="595" y="153" text-anchor="middle" font-size="9.5" fill="#6B7280">V100 · CUDA 11.8</text>
+      <text x="595" y="168" text-anchor="middle" font-size="9.5" fill="#8B6914">cuDNN 8.6 (drifted)</text>
+      <text x="595" y="185" text-anchor="middle" font-size="11" fill="#8B6914" font-weight="600">Result C: 68.7%</text>
+    </svg>
+    <div class="fig-caption">Fig. 2 &nbsp;&mdash;&nbsp; Same container image, different hardware or runtime library versions. Results A and B match on pinned environments. Result C drifts when cuDNN version changes inside a nominally identical image, detectable only via <code>ldd</code> inspection.</div>
+  </figure>
+
+  <!-- ── Same environment, not same result ── -->
+  <h2 id="same-environment">Same Environment Is Not Always the Same Result</h2>
+  <p>A container answers one question well: can someone run this code in a similar software environment? Scientific reproducibility requires more. It asks whether the result remains stable across repeated runs, whether it holds across hardware platforms, and whether small numerical differences change the scientific conclusion.<sup class="cite"><a href="#ref4">[4]</a></sup></p>
+  <p>In deep learning, small numerical differences can sometimes accumulate during optimization. In many cases the final answer may still be scientifically consistent. In other cases, differences in precision, GPU kernels, reduction order, or nondeterministic operations affect convergence behavior, evaluation metrics, or model selection. Henderson et al. documented this effect across reinforcement learning benchmarks, finding that seemingly minor implementation choices produced result variance that obscured genuine algorithmic differences.<sup class="cite"><a href="#ref5">[5]</a></sup></p>
+
+  <!-- ── Where it breaks ── -->
+  <h2 id="where-breaks">Where Reproducibility Can Still Break</h2>
+
+  <h3>1. Dependency specifications may be incomplete</h3>
+  <p>A Dockerfile or container recipe may appear precise while still leaving important details unresolved: base image digest, cuDNN point release, cuBLAS or NCCL version, compiler options, GPU architecture flags, and transitive Python dependencies. A container built from the same Dockerfile six months apart may not behave identically for numerical workloads. PyTorch's own documentation acknowledges that fully deterministic behavior requires explicit opt-in at multiple levels.<sup class="cite"><a href="#ref6">[6]</a></sup></p>
+
+  <h3>2. GPU libraries make runtime decisions</h3>
+  <p>Modern GPU libraries are optimized heavily for performance. cuDNN may choose different convolution algorithms dynamically based on tensor shapes, available memory, device architecture, workspace memory limits, and benchmarking settings. Different low-level execution paths may be mathematically equivalent in exact arithmetic, but floating-point arithmetic is not exact. The same operation executed in different order produces a different result.</p>
+
+  <h3>3. Floating-point differences accumulate</h3>
+  <p>Floating-point arithmetic is not associative or commutative in finite precision. The result of summing a large set of numbers depends on the order of operations, the data type in use, hardware implementation details, and how parallel reductions are structured. Bouthillier et al. measured result variance attributable solely to these low-level numerical factors across standard ML benchmarks and found it to be meaningful at the level of published comparisons.<sup class="cite"><a href="#ref2">[2]</a></sup></p>
+
+  <h3>4. Workflow provenance is often undocumented</h3>
+  <p>Reproducibility is not only about rerunning the final training script. Scientific workflows involve iterative exploration: data cleaning decisions, feature engineering choices, failed experiments that shaped the final approach, hyperparameter search history, and threshold decisions used to select among candidate results. Dodge et al. argue that reporting only final numbers without documenting the search process misleads readers about the robustness of the result.<sup class="cite"><a href="#ref7">[7]</a></sup></p>
+
+  <!-- ── Checklist ── -->
+  <h2 id="checklist">A Practical Checklist</h2>
+  <p>The following steps move substantially closer to reproducible scientific ML without requiring bitwise determinism as the target standard. Adapted from the NeurIPS reproducibility guidelines and the Turing Way reproducibility handbook.<sup class="cite"><a href="#ref1">[1]</a><a href="#ref3">[3]</a></sup></p>
+
+  <ul class="check-list">
+    <li>Use immutable container image digests rather than floating tags like <code>:latest</code>.</li>
+    <li>Pin direct and transitive Python dependencies using a lock file.</li>
+    <li>Record CUDA, cuDNN, cuBLAS, NCCL, compiler, and driver versions explicitly at runtime startup.</li>
+    <li>Record GPU model, compute capability, memory configuration, and driver version in experiment logs.</li>
+    <li>Save full runtime environment logs at the beginning of each experiment run.</li>
+    <li>Document precision settings (FP32, TF32, BF16, FP16) and whether deterministic mode is enabled.</li>
+    <li>Run experiments across more than one random seed before making publication-quality claims.</li>
+    <li>Validate not only predictive accuracy but also domain consistency where a ground truth exists.</li>
+    <li>Archive intermediate checkpoints, not only the final model weights.</li>
+    <li>Record the data preprocessing and feature engineering decisions that preceded the final run.</li>
+  </ul>
+
+  <!-- ── Three levels ── -->
+  <h2 id="levels">Three Useful Levels of Reproducibility</h2>
+  <p>Not every project needs the same rigor. A useful framework distinguishes three targets, matched to the context and stakes of the work.<sup class="cite"><a href="#ref1">[1]</a></sup></p>
+
+  <div class="level-grid">
+    <div class="level-card">
+      <div class="level-num">Level 1</div>
+      <div class="level-title">Internal Repeatability</div>
+      <div class="level-body">The same team can rerun and debug its own experiments. Appropriate for early exploration. A container plus fixed random seeds is usually sufficient.</div>
+    </div>
+    <div class="level-card">
+      <div class="level-num">Level 2</div>
+      <div class="level-title">Publication Ready</div>
+      <div class="level-body">External researchers or reviewers can understand and rerun the work with reasonable effort. The minimum standard for papers, public research code, and collaborative scientific ML projects.</div>
+    </div>
+    <div class="level-card">
+      <div class="level-num">Level 3</div>
+      <div class="level-title">Cross-Environment Robustness</div>
+      <div class="level-body">The scientific conclusion holds across different hardware platforms and implementations. Required for foundational claims, safety-relevant applications, and models intended for long-term deployment.</div>
+    </div>
+  </div>
+
+  <!-- ── Physics informed case ── -->
+  <h2 id="physics">The Physics Informed Case</h2>
+  <p>The reproducibility problem takes on additional significance for physics informed models, where outputs are not only evaluated by predictive accuracy but also by whether they satisfy governing physical constraints. A model that converges differently across environments may produce outputs that pass accuracy metrics while failing physically meaningful tests of domain consistency.</p>
+  <p>Research on physical validity instability in containerized scientific machine learning has found that cuDNN version mismatches, detectable only by inspecting shared library linkage via <code>ldd</code> rather than inspecting image manifests, can produce large swings in physics constraint compliance across environments that appear identical at the container layer. This illustrates a class of reproducibility failure that standard container inspection tools cannot surface.</p>
+  <p>For any model where outputs are expected to satisfy physical laws, domain consistency validation needs to be part of the reproducibility evaluation. A model that reproduces its accuracy metric is not the same as a model that reproduces its science.</p>
+
+  <div class="callout">Containerization captures the software environment. Reproducibility requires control, documentation, and verification across the entire stack.</div>
+
+  <!-- ── Path forward ── -->
+  <h2 id="path-forward">The Path Forward</h2>
+  <p>Perfect bitwise reproducibility is not a realistic target for modern ML systems operating at scale, and it is not the right target. The goal is robust scientific reproducibility: results that are stable enough, documented enough, and validated enough for others to build on with confidence.</p>
+  <p>That goal requires treating the software environment, the hardware environment, the workflow decisions, and the domain validation as joint objects of documentation and control. Containers handle the first. The other three require deliberate practice that containerization alone does not supply.</p>
+  <p>The research community has made substantial progress on tooling for experiment tracking, workflow provenance, and environment specification. Tools like MLflow, DVC, and Weights and Biases address parts of the problem. The gap is not primarily technical. It is the habit of treating reproducibility as a property of the container rather than a property of the entire scientific process.</p>
+
+  <!-- ── References ── -->
+  <div class="references" id="references">
+    <h2>References</h2>
+    <ol class="ref-list">
+      <li>
+        <span class="ref-num">[1]</span>
+        Pineau, J., Vincent-Lamarre, P., Sinha, K., Larivière, V., Beygelzimer, A., d'Alché-Buc, F., Fox, E., &amp; Larochelle, H. (2021).
+        <em>Improving Reproducibility in Machine Learning Research.</em>
+        Journal of Machine Learning Research, 22(164), 1–20.
+        Open access: <a href="https://jmlr.org/papers/v22/20-1364.html" target="_blank" rel="noopener">jmlr.org/papers/v22/20-1364.html</a>
+      </li>
+      <li>
+        <span class="ref-num">[2]</span>
+        Bouthillier, X., Delaunay, P., Bronzi, M., Trofimov, A., Nichyporuk, B., Szeto, J., Mohammadi Sepahvand, N., Raff, E., Madan, K., Voleti, V., Kahou, S. E., Michalski, V., Serdyuk, D., Arbel, T., Pal, C., Varoquaux, G., &amp; Vincent, P. (2021).
+        <em>Accounting for Variance in Machine Learning Benchmarks.</em>
+        Proceedings of Machine Learning and Systems (MLSys), 3.
+        Preprint: <a href="https://arxiv.org/abs/2103.03673" target="_blank" rel="noopener">arxiv.org/abs/2103.03673</a>
+      </li>
+      <li>
+        <span class="ref-num">[3]</span>
+        The Turing Way Community. (2022).
+        <em>The Turing Way: A Handbook for Reproducible, Ethical and Collaborative Research.</em>
+        Zenodo. Available at: <a href="https://the-turing-way.netlify.app/reproducible-research/" target="_blank" rel="noopener">the-turing-way.netlify.app/reproducible-research</a>
+      </li>
+      <li>
+        <span class="ref-num">[4]</span>
+        Gundersen, O. E., &amp; Kjensmo, S. (2018).
+        <em>State of the Art: Reproducibility in Artificial Intelligence.</em>
+        Proceedings of the AAAI Conference on Artificial Intelligence, 32(1).
+        Available via AAAI: <a href="https://ojs.aaai.org/index.php/AAAI/article/view/11503" target="_blank" rel="noopener">ojs.aaai.org/index.php/AAAI/article/view/11503</a>
+      </li>
+      <li>
+        <span class="ref-num">[5]</span>
+        Henderson, P., Islam, R., Bachman, P., Pineau, J., Precup, D., &amp; Meger, D. (2018).
+        <em>Deep Reinforcement Learning That Matters.</em>
+        Proceedings of AAAI 2018.
+        Preprint: <a href="https://arxiv.org/abs/1709.06560" target="_blank" rel="noopener">arxiv.org/abs/1709.06560</a>
+      </li>
+      <li>
+        <span class="ref-num">[6]</span>
+        PyTorch Team. (2024).
+        <em>Reproducibility.</em>
+        PyTorch Documentation.
+        <a href="https://pytorch.org/docs/stable/notes/randomness.html" target="_blank" rel="noopener">pytorch.org/docs/stable/notes/randomness.html</a>
+      </li>
+      <li>
+        <span class="ref-num">[7]</span>
+        Dodge, J., Gururangan, S., Card, D., Schwartz, R., &amp; Smith, N. A. (2019).
+        <em>Show Your Work: Improved Reporting of Experimental Results.</em>
+        EMNLP-IJCNLP 2019.
+        Preprint: <a href="https://arxiv.org/abs/1909.03004" target="_blank" rel="noopener">arxiv.org/abs/1909.03004</a>
+      </li>
+    </ol>
+  </div>
+
+  <p class="author-note">Written as a technical perspective on AI reproducibility, scientific ML workflows, and research computing infrastructure. &nbsp;·&nbsp; Jaya Preethi Mohan, University of North Dakota.</p>
+
+</article>
+</main>
+
+<!-- ── Sidebar ── -->
+<aside class="post-sidebar">
+  <div class="sidebar-card reveal">
+    <div class="sidebar-label">Contents</div>
+    <a href="#core-problem">The core problem</a>
+    <a href="#what-containers-do">What containers do well</a>
+    <a href="#same-environment">Same environment, same result?</a>
+    <a href="#where-breaks">Where it breaks</a>
+    <a href="#checklist">Practical checklist</a>
+    <a href="#levels">Three levels</a>
+    <a href="#physics">Physics informed case</a>
+    <a href="#path-forward">Path forward</a>
+    <a href="#references">References</a>
+  </div>
+
+  <div class="sidebar-card reveal d1">
+    <div class="sidebar-label">Related Posts</div>
+    <a href="esro-blog-post.html">Energy Systems Runtime Observatory</a>
+    <a href="der-llm-blog-post.html">DER LLM Framework</a>
+  </div>
+
+  <div class="sidebar-card reveal d2">
+    <div class="sidebar-label">Key References</div>
+    <a href="https://jmlr.org/papers/v22/20-1364.html" target="_blank" rel="noopener" style="font-size:0.72rem">Pineau et al., JMLR 2021</a>
+    <a href="https://arxiv.org/abs/2103.03673" target="_blank" rel="noopener" style="font-size:0.72rem">Bouthillier et al., MLSys 2021</a>
+    <a href="https://the-turing-way.netlify.app/" target="_blank" rel="noopener" style="font-size:0.72rem">The Turing Way Handbook</a>
+    <a href="https://arxiv.org/abs/1709.06560" target="_blank" rel="noopener" style="font-size:0.72rem">Henderson et al., AAAI 2018</a>
+    <a href="https://pytorch.org/docs/stable/notes/randomness.html" target="_blank" rel="noopener" style="font-size:0.72rem">PyTorch Reproducibility Docs</a>
+  </div>
+
+  <div class="sidebar-card reveal d2">
+    <div class="sidebar-label">Topics</div>
+    <div style="display:flex;flex-wrap:wrap;gap:0.35rem;margin-top:0.2rem">
+      <span class="tag">Scientific ML</span>
+      <span class="tag">Containers</span>
+      <span class="tag">HPC</span>
+      <span class="tag">cuDNN</span>
+      <span class="tag">NeurIPS</span>
+    </div>
+  </div>
+</aside>
+</div>
+
+<div class="rule" style="margin:0"></div>
+<footer>
+  <div class="container">
+    <p class="foot-txt">© 2026 <em>Jaya Preethi Mohan</em> &middot; AI / ML &middot; HPC &middot; Scientific Computing</p>
+  </div>
+</footer>
+
+<script>
+const ham=document.getElementById('ham'),nl=document.getElementById('navLinks');
+ham.addEventListener('click',()=>{ham.classList.toggle('open');nl.classList.toggle('open')});
+nl.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{ham.classList.remove('open');nl.classList.remove('open')}));
+const io=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('on')}),{threshold:0.06});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>
