@@ -6,7 +6,7 @@
 <meta name="description" content="Doctoral Researcher | AI/ML · HPC · Cloud · Quantum | PNNL · IBM · UND" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<style> 
+<style>
 :root{--surface-0:#F4F6F9;--surface-1:#FFFFFF;--surface-2:#EEF1F6;--stroke:#DDE2EC;--stroke-md:#C8CFE0;--grn:#1C5F43;--grn-mid:#237A54;--grn-light:#E8F4EF;--grn-xl:#F2FAF6;--gld:#8B6914;--gld-light:#FBF5E6;--ink-0:#111827;--ink-1:#374151;--ink-2:#6B7280;--ink-3:#9CA3AF;--serif:'DM Serif Display',Georgia,serif;--sans:'Inter',system-ui,sans-serif;--mono:'JetBrains Mono','Courier New',monospace;--nav-h:64px}
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth;font-size:16px}
@@ -32,10 +32,8 @@ nav .inner{max-width:1100px;margin:0 auto;padding:0 2rem;height:100%;display:fle
 .hamburger.open span:nth-child(1){top:7px;transform:rotate(45deg)}
 .hamburger.open span:nth-child(2){opacity:0}
 .hamburger.open span:nth-child(3){top:7px;transform:rotate(-45deg)}
-
 /* HERO */
 .hero{min-height:100vh;padding-top:var(--nav-h);display:grid;grid-template-columns:0.68fr 1.32fr;position:relative;overflow:hidden;background:var(--surface-1)}
-.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 0% 0%,rgba(28,95,67,0.08) 0%,rgba(28,95,67,0.03) 35%,transparent 65%);pointer-events:none;z-index:0}
 .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 55% 70% at 0% 0%,rgba(28,95,67,0.10) 0%,rgba(28,95,67,0.05) 28%,rgba(28,95,67,0.02) 50%,transparent 70%);pointer-events:none;z-index:0}
 .hero-text{display:flex;flex-direction:column;justify-content:center;padding:3rem 3.5rem 3rem 0;position:relative;z-index:1;background:linear-gradient(160deg,rgba(28,95,67,0.04) 0%,rgba(28,95,67,0.015) 45%,transparent 75%)}
 .hero-text::before{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(to right,rgba(28,95,67,0.12) 0%,rgba(28,95,67,0.04) 50%,transparent 80%);pointer-events:none;z-index:0}
@@ -51,6 +49,16 @@ nav .inner{max-width:1100px;margin:0 auto;padding:0 2rem;height:100%;display:fle
 .brand-sub{font-family:var(--mono);font-size:0.54rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-3)}
 .brand-div{width:1px;height:26px;background:var(--stroke)}
 .hero-cta{display:flex;gap:0.8rem;flex-wrap:wrap;opacity:0;animation:rise .7s ease .65s forwards}
+.hero-writing{margin-top:2rem;opacity:0;animation:rise .7s ease .82s forwards}
+.hero-writing-lbl{font-family:var(--mono);font-size:0.58rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--ink-3);margin-bottom:0.55rem;display:flex;align-items:center;gap:0.6rem}
+.hero-writing-lbl::after{content:'';width:40px;height:1px;background:var(--stroke-md)}
+.hero-writing-posts{display:flex;flex-direction:column;gap:0.28rem}
+.hero-writing-post{display:inline-flex;align-items:baseline;gap:0.4rem;font-size:0.79rem;color:var(--ink-2);transition:color .2s;text-decoration:none;line-height:1.65}
+.hero-writing-post:hover{color:var(--grn)}
+.hero-writing-arr{font-family:var(--mono);font-size:0.6rem;color:var(--grn);flex-shrink:0;transition:transform .2s;display:inline-block}
+.hero-writing-post:hover .hero-writing-arr{transform:translateX(2px)}
+.hero-writing-all{margin-top:0.6rem;font-family:var(--mono);font-size:0.57rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--grn);display:inline-flex;align-items:center;gap:0.35rem;transition:color .2s;text-decoration:none}
+.hero-writing-all:hover{color:var(--gld)}
 .btn{display:inline-flex;align-items:center;gap:0.4rem;font-family:var(--mono);font-size:0.68rem;font-weight:500;letter-spacing:0.07em;text-transform:uppercase;cursor:pointer;border:none;padding:0.72rem 1.5rem;transition:all .25s ease}
 .btn-fill{background:var(--grn);color:#fff}
 .btn-fill:hover{background:var(--grn-mid);transform:translateY(-2px);box-shadow:0 6px 20px rgba(28,95,67,0.18)}
@@ -59,7 +67,6 @@ nav .inner{max-width:1100px;margin:0 auto;padding:0 2rem;height:100%;display:fle
 .hero-photo-pane{position:relative;overflow:hidden;margin-right:-1px;background:radial-gradient(ellipse 85% 80% at 65% 40%,rgba(28,95,67,0.06) 0%,rgba(28,95,67,0.025) 45%,transparent 70%)}
 .hero-photo-bg{position:absolute;inset:0;background-image:url('./images/prof_pic.jpg');background-size:cover;background-position:center top;background-repeat:no-repeat;transform:scale(1.05);transform-origin:center top;z-index:1}
 .hero-photo-bg::after{content:'';position:absolute;inset:0;background:linear-gradient(to right,rgba(255,255,255,0.98) 0%,rgba(255,255,255,0.75) 12%,rgba(255,255,255,0.35) 26%,rgba(255,255,255,0.08) 42%,transparent 58%),linear-gradient(to bottom,transparent 82%,rgba(244,246,249,0.15) 100%)}
-
 .hero-deco{position:absolute;inset:0;pointer-events:none;z-index:0}.hero-deco svg{position:absolute;right:-20px;top:50%;transform:translateY(-48%);width:85%;height:auto}
 /* SECTIONS */
 .sec{padding:5.5rem 0;position:relative;z-index:1}
@@ -77,14 +84,11 @@ nav .inner{max-width:1100px;margin:0 auto;padding:0 2rem;height:100%;display:fle
 .reveal.on{opacity:1;transform:none}
 .reveal.d1{transition-delay:.1s}
 .reveal.d2{transition-delay:.2s}
-
 /* ABOUT */
 .about-grid{display:grid;grid-template-columns:0.88fr 1.12fr;gap:4rem;align-items:center}
 .about-body p{font-size:0.92rem;color:var(--ink-1);line-height:1.88;margin-bottom:1rem;text-align:justify}
 .about-body strong{color:var(--ink-0);font-weight:600}
 .hex-wrap{display:flex;align-items:center;justify-content:center}.hex-wrap svg{width:100%;max-width:100%;height:auto;display:block}
-
-
 /* RESEARCH */
 .research-stack{display:flex;flex-direction:column;gap:1rem}
 .r-card{background:var(--surface-1);border:1px solid var(--stroke);padding:1.6rem 1.8rem;display:grid;grid-template-columns:48px 1fr;gap:1.4rem;align-items:start;position:relative;overflow:hidden;transition:border-color .25s,box-shadow .25s,transform .25s}
@@ -98,7 +102,6 @@ nav .inner{max-width:1100px;margin:0 auto;padding:0 2rem;height:100%;display:fle
 .r-desc{font-size:0.83rem;color:var(--ink-2);line-height:1.78;margin-bottom:0.8rem}
 .tag-row{display:flex;flex-wrap:wrap;gap:0.35rem}
 .tag{font-family:var(--mono);font-size:0.56rem;letter-spacing:0.04em;padding:0.24rem 0.55rem;background:var(--grn-xl);color:var(--grn);border:1px solid rgba(28,95,67,0.12)}
-
 /* EXPERIENCE */
 .experience-sec{position:relative;overflow:hidden;background-image:linear-gradient(to right,var(--surface-2) 0%,var(--surface-2) 52%,rgba(238,241,246,0.75) 68%,transparent 100%),url('./images/women_climbing.png');background-repeat:no-repeat,no-repeat;background-size:auto,46% auto;background-position:0 0,right 15%}
 .exp-inner{max-width:58%}
@@ -112,7 +115,6 @@ nav .inner{max-width:1100px;margin:0 auto;padding:0 2rem;height:100%;display:fle
 .tl-role{font-family:var(--serif);font-size:1.3rem;color:var(--ink-0);line-height:1.2;margin-bottom:0.1rem}
 .tl-org{font-size:0.78rem;color:var(--ink-3);margin-bottom:0.6rem}
 .tl-desc{font-size:0.83rem;color:var(--ink-2);line-height:1.8;max-width:560px;text-align:justify}
-
 /* SKILLS */
 .skill-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
 .sk-card{background:var(--surface-1);border:1px solid var(--stroke);padding:1.6rem 1.4rem;transition:border-color .25s,box-shadow .25s,transform .25s}
@@ -123,7 +125,6 @@ nav .inner{max-width:1100px;margin:0 auto;padding:0 2rem;height:100%;display:fle
 .sk-list{list-style:none;display:flex;flex-direction:column;gap:0.38rem}
 .sk-list li{font-size:0.78rem;color:var(--ink-2);padding-left:1rem;position:relative}
 .sk-list li::before{content:'›';position:absolute;left:0;color:var(--grn);font-weight:600}
-
 /* AWARDS */
 .awards-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;justify-items:center}
 .aw-card{background:var(--surface-1);border:1px solid var(--stroke);padding:2.2rem 2rem 2rem;text-align:center;min-width:0;max-width:340px;position:relative;overflow:hidden;margin:0 auto;transition:border-color .3s,box-shadow .3s,transform .3s;display:flex;flex-direction:column;align-items:center}
@@ -134,7 +135,6 @@ nav .inner{max-width:1100px;margin:0 auto;padding:0 2rem;height:100%;display:fle
 .aw-icon-box .icon{width:24px;height:24px}
 .aw-name{font-family:var(--serif);font-size:1.18rem;color:var(--ink-0);line-height:1.3;margin-bottom:0.45rem}
 .aw-org{font-family:var(--mono);font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gld)}
-
 /* PUBLICATIONS */
 .pub-list{display:flex;flex-direction:column;gap:0.9rem}
 .pub-item{display:grid;grid-template-columns:1fr auto;gap:1.5rem;align-items:center;background:var(--surface-1);border:1px solid var(--stroke);padding:1.4rem 1.8rem;transition:border-color .25s,box-shadow .25s}
@@ -144,7 +144,20 @@ nav .inner{max-width:1100px;margin:0 auto;padding:0 2rem;height:100%;display:fle
 .pub-meta{font-size:0.74rem;color:var(--ink-3)}
 .pub-link{font-family:var(--mono);font-size:0.6rem;letter-spacing:0.07em;text-transform:uppercase;color:var(--grn);white-space:nowrap;padding:0.45rem 0.9rem;border:1px solid rgba(28,95,67,0.25);transition:background .2s,color .2s}
 .pub-link:hover{background:var(--grn);color:#fff;border-color:var(--grn)}
-
+/* WRITING */
+.writing-card{display:grid;grid-template-columns:56px 1fr auto;gap:1.5rem;align-items:center;background:var(--surface-1);border:1px solid var(--stroke);padding:1.6rem 1.8rem;position:relative;overflow:hidden;transition:border-color .25s,box-shadow .25s,transform .25s;text-decoration:none;color:inherit}
+.writing-card::before{content:'';position:absolute;top:0;left:0;bottom:0;width:3px;background:transparent;transition:background .25s}
+.writing-card:hover::before{background:linear-gradient(180deg,var(--grn),var(--gld))}
+.writing-card:hover{border-color:var(--stroke-md);transform:translateX(3px);box-shadow:0 4px 18px rgba(0,0,0,0.06)}
+.writing-card-icon{width:44px;height:44px;background:var(--grn-xl);border:1px solid rgba(28,95,67,0.12);display:flex;align-items:center;justify-content:center;color:var(--grn);flex-shrink:0}
+.writing-card-venue{font-family:var(--mono);font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gld);margin-bottom:0.3rem}
+.writing-card-title{font-family:var(--serif);font-size:1.12rem;color:var(--ink-0);line-height:1.3;margin-bottom:0.35rem;transition:color .2s}
+.writing-card:hover .writing-card-title{color:var(--grn)}
+.writing-card-excerpt{font-size:0.82rem;color:var(--ink-2);line-height:1.75}
+.writing-card-meta{display:flex;flex-direction:column;align-items:flex-end;gap:0.6rem;flex-shrink:0;min-width:80px}
+.writing-date{font-family:var(--mono);font-size:0.58rem;letter-spacing:0.06em;color:var(--ink-3);white-space:nowrap}
+.writing-read{font-family:var(--mono);font-size:0.6rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--grn);white-space:nowrap;transition:color .2s}
+.writing-card:hover .writing-read{color:var(--gld)}
 /* CONTACT */
 .contact-wrap{text-align:center}
 .contact-txt{font-size:0.9rem;color:var(--ink-2);max-width:460px;margin:0.8rem auto 2rem;line-height:1.85}
@@ -175,10 +188,14 @@ footer{background:var(--surface-1);border-top:1px solid var(--stroke);padding:1.
   .hamburger{display:block}
   .hero-name span{white-space:normal}
   .hero-cta{flex-direction:column}
+  .hero-writing{margin-top:1.5rem}
   .hero-brands{gap:1.2rem}
   .skill-grid{grid-template-columns:1fr}
   .awards-grid{grid-template-columns:1fr}
   .pub-item{grid-template-columns:1fr}
+  .writing-card{grid-template-columns:1fr}
+  .writing-card-left{display:none}
+  .writing-card-meta{flex-direction:row;align-items:center;justify-content:space-between;margin-top:0.75rem}
 }
 </style>
 </head>
@@ -191,6 +208,7 @@ footer{background:var(--surface-1);border-top:1px solid var(--stroke);padding:1.
       <li><a href="#about">About</a></li><li><a href="#research">Research</a></li>
       <li><a href="#experience">Experience</a></li><li><a href="#skills">Expertise</a></li>
       <li><a href="#awards">Awards</a></li><li><a href="#publications">Publications</a></li>
+      <li><a href="#writing">Writing</a></li>
       <li><a href="blog.html">Blog</a></li><li><a href="#contact">Contact</a></li>
     </ul>
   </div>
@@ -212,27 +230,32 @@ footer{background:var(--surface-1);border-top:1px solid var(--stroke);padding:1.
       <a href="#research" class="btn btn-fill">Explore Research</a>
       <a href="#contact" class="btn btn-outline">Get in Touch</a>
     </div>
-    <div class="hero-blog" style="margin-top:2.2rem; display: flex; justify-content: flex-start;">
-      <a href="blog.html" class="hero-blog-btn">
-        <span class="hero-blog-flag">Research Blogs:</span>
-        <span class="hero-blog-desc">AI, ML, and Energy Systems (insights, frameworks, reproducible science)</span>
-        <svg class="hero-blog-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    <div class="hero-writing">
+      <div class="hero-writing-lbl">Recent Writing</div>
+      <div class="hero-writing-posts">
+        <a href="assumption-mismatch-blog.html" class="hero-writing-post">
+          <span class="hero-writing-arr">&#x2192;</span>Assumption Mismatch: What Scientific Algorithms Expect
+        </a>
+        <a href="quantum-serverless-blog.html" class="hero-writing-post">
+          <span class="hero-writing-arr">&#x2192;</span>No Servers, Actually
+        </a>
+        <a href="ai-reproducibility-blog.html" class="hero-writing-post">
+          <span class="hero-writing-arr">&#x2192;</span>Containerized ML Is Not Reproducible ML
+        </a>
+      </div>
+      <a href="blog.html" class="hero-writing-all">
+        View all posts
+        <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
       </a>
     </div>
   </div>
   <div class="hero-photo-pane">
-    <!-- Decorative design visible even without photo -->
     <div class="hero-deco" aria-hidden="true">
       <svg viewBox="0 0 520 820" xmlns="http://www.w3.org/2000/svg">
-        <!-- Large back circle -->
         <circle cx="300" cy="410" r="310" fill="rgba(28,95,67,0.04)" stroke="rgba(28,95,67,0.07)" stroke-width="1"/>
-        <!-- Mid circle -->
         <circle cx="300" cy="410" r="230" fill="rgba(28,95,67,0.035)" stroke="rgba(28,95,67,0.05)" stroke-width="0.8"/>
-        <!-- Small inner accent -->
         <circle cx="300" cy="410" r="150" fill="rgba(28,95,67,0.025)"/>
-        <!-- Corner arc top-right -->
         <path d="M 450 80 A 200 200 0 0 0 520 250" fill="none" stroke="rgba(28,95,67,0.06)" stroke-width="1.2"/>
-        <!-- Thin accent line -->
         <line x1="80" y1="680" x2="460" y2="680" stroke="rgba(28,95,67,0.04)" stroke-width="1"/>
       </svg>
     </div>
@@ -246,49 +269,30 @@ footer{background:var(--surface-1);border-top:1px solid var(--stroke);padding:1.
     <div class="hdr reveal"><div class="sec-eye">About</div><h2 class="sec-title">Research at the Intersection</h2></div>
     <div class="about-grid">
       <div class="about-body reveal">
-        <p>As an experienced <strong>Doctoral Researcher at the University of North Dakota</strong>, a former <strong>Computer Scientist at Pacific Northwest National Laboratory</strong>, and with prior industry experience at <strong>IBM</strong>, I have demonstrated research and engineering work spanning AI systems, cloud infrastructure, and national critical infrastructure across research and industry settings.</p>
+        <p>As an experienced <strong>Doctoral Researcher at the University of North Dakota</strong>, a former <strong>Computer Scientist at Pacific Northwest National Laboratory</strong>, and with prior industry experience at <strong>IBM</strong>, I have led research and engineering work spanning AI systems, cloud infrastructure, and national critical infrastructure across research and industry settings.</p>
         <p>Applied contributions span production ML systems for power grid security, statistical anomaly detection for IT/OT environments, and agentic AI frameworks for distributed energy resource management, with peer-reviewed publications across IEEE venues.</p>
         <p>In cloud and DevOps engineering, I design serverless AWS architectures, implement CI/CD pipelines synchronized with cybersecurity maturity assessments, and build containerized cross-environment workflows using Docker and Singularity that enable reproducible science across DOE supercomputers, cloud platforms, and institutional HPC clusters.</p>
       </div>
       <div class="hex-wrap reveal d1">
       <svg viewBox="0 0 400 450" xmlns="http://www.w3.org/2000/svg" aria-label="Core expertise tiles">
-
-        <!-- ── HEX 1: AI Research ── -->
         <polygon points="105,15 192,65 192,165 105,215 18,165 18,65" fill="#1C5F43"/>
-        <polygon points="105,15 192,65 192,165 105,215 18,165 18,65" fill="none"
-                 stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
-        <!-- top edge highlight -->
-        <polyline points="18,65 105,15 192,65" fill="none"
-                  stroke="rgba(255,255,255,0.18)" stroke-width="1.5" stroke-linecap="round"/>
-        <!-- icon: neural nodes -->
+        <polygon points="105,15 192,65 192,165 105,215 18,165 18,65" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+        <polyline points="18,65 105,15 192,65" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1.5" stroke-linecap="round"/>
         <circle cx="97"  cy="78" r="4.5" fill="rgba(255,255,255,0.28)"/>
         <circle cx="113" cy="78" r="4.5" fill="rgba(255,255,255,0.28)"/>
         <circle cx="105" cy="65" r="5"   fill="rgba(255,255,255,0.5)"/>
         <line x1="97" y1="78" x2="105" y2="65" stroke="rgba(255,255,255,0.25)" stroke-width="1.4"/>
         <line x1="113" y1="78" x2="105" y2="65" stroke="rgba(255,255,255,0.25)" stroke-width="1.4"/>
         <line x1="97"  y1="78" x2="113" y2="78" stroke="rgba(255,255,255,0.2)"  stroke-width="1.4"/>
-        <!-- divider line -->
         <line x1="68" y1="94" x2="142" y2="94" stroke="rgba(255,255,255,0.12)" stroke-width="0.8"/>
-        <!-- title -->
-        <text x="105" y="112" text-anchor="middle" font-size="13.5" font-weight="700"
-              fill="white" font-family="Inter,sans-serif">AI Research</text>
-        <!-- subtitle -->
-        <text x="105" y="131" text-anchor="middle" font-size="9.5"
-              fill="rgba(255,255,255,0.78)" font-family="Inter,sans-serif">Anomaly Detection</text>
-        <text x="105" y="145" text-anchor="middle" font-size="9.5"
-              fill="rgba(255,255,255,0.78)" font-family="Inter,sans-serif">&amp; Algorithm Design</text>
-        <!-- bottom faint accent -->
+        <text x="105" y="112" text-anchor="middle" font-size="13.5" font-weight="700" fill="white" font-family="Inter,sans-serif">AI Research</text>
+        <text x="105" y="131" text-anchor="middle" font-size="9.5" fill="rgba(255,255,255,0.78)" font-family="Inter,sans-serif">Anomaly Detection</text>
+        <text x="105" y="145" text-anchor="middle" font-size="9.5" fill="rgba(255,255,255,0.78)" font-family="Inter,sans-serif">&amp; Algorithm Design</text>
         <line x1="85" y1="160" x2="125" y2="160" stroke="rgba(255,255,255,0.10)" stroke-width="0.8"/>
-
-        <!-- ── HEX 2: HPC & Systems ── -->
         <polygon points="293,15 380,65 380,165 293,215 206,165 206,65" fill="#237A54"/>
-        <polygon points="293,15 380,65 380,165 293,215 206,165 206,65" fill="none"
-                 stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
-        <polyline points="206,65 293,15 380,65" fill="none"
-                  stroke="rgba(255,255,255,0.18)" stroke-width="1.5" stroke-linecap="round"/>
-        <!-- icon: cpu chip -->
-        <rect x="282" y="60" width="22" height="18" rx="3" fill="none"
-              stroke="rgba(255,255,255,0.4)" stroke-width="1.2"/>
+        <polygon points="293,15 380,65 380,165 293,215 206,165 206,65" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+        <polyline points="206,65 293,15 380,65" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1.5" stroke-linecap="round"/>
+        <rect x="282" y="60" width="22" height="18" rx="3" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1.2"/>
         <rect x="286" y="63" width="14" height="12" rx="1" fill="rgba(255,255,255,0.18)"/>
         <line x1="283" y1="65" x2="279" y2="65" stroke="rgba(255,255,255,0.35)" stroke-width="1"/>
         <line x1="283" y1="69" x2="279" y2="69" stroke="rgba(255,255,255,0.35)" stroke-width="1"/>
@@ -301,62 +305,37 @@ footer{background:var(--surface-1);border-top:1px solid var(--stroke);padding:1.
         <line x1="293" y1="78" x2="293" y2="81" stroke="rgba(255,255,255,0.25)" stroke-width="1"/>
         <line x1="300" y1="78" x2="300" y2="81" stroke="rgba(255,255,255,0.25)" stroke-width="1"/>
         <line x1="256" y1="94" x2="330" y2="94" stroke="rgba(255,255,255,0.12)" stroke-width="0.8"/>
-        <text x="293" y="112" text-anchor="middle" font-size="13.5" font-weight="700"
-              fill="white" font-family="Inter,sans-serif">HPC &amp; Systems</text>
-        <text x="293" y="131" text-anchor="middle" font-size="9.5"
-              fill="rgba(255,255,255,0.78)" font-family="Inter,sans-serif">CUDA · SLURM · MPI</text>
-        <text x="293" y="145" text-anchor="middle" font-size="9.5"
-              fill="rgba(255,255,255,0.78)" font-family="Inter,sans-serif">Power Systems</text>
+        <text x="293" y="112" text-anchor="middle" font-size="13.5" font-weight="700" fill="white" font-family="Inter,sans-serif">HPC &amp; Systems</text>
+        <text x="293" y="131" text-anchor="middle" font-size="9.5" fill="rgba(255,255,255,0.78)" font-family="Inter,sans-serif">CUDA · SLURM · MPI</text>
+        <text x="293" y="145" text-anchor="middle" font-size="9.5" fill="rgba(255,255,255,0.78)" font-family="Inter,sans-serif">Power Systems</text>
         <line x1="273" y1="160" x2="313" y2="160" stroke="rgba(255,255,255,0.10)" stroke-width="0.8"/>
-
-        <!-- thin connector lines between hexes -->
         <line x1="193" y1="115" x2="205" y2="115" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
-        <line x1="105" y1="216" x2="105" y2="231" stroke="rgba(28,95,67,0.3)"    stroke-width="1"/>
-        <line x1="293" y1="216" x2="293" y2="231" stroke="rgba(28,95,67,0.3)"    stroke-width="1"/>
+        <line x1="105" y1="216" x2="105" y2="231" stroke="rgba(28,95,67,0.3)" stroke-width="1"/>
+        <line x1="293" y1="216" x2="293" y2="231" stroke="rgba(28,95,67,0.3)" stroke-width="1"/>
         <line x1="193" y1="332" x2="205" y2="332" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
-
-        <!-- ── HEX 3: Research & Talks ── -->
         <polygon points="105,232 192,282 192,382 105,432 18,382 18,282" fill="#52A882"/>
-        <polygon points="105,232 192,282 192,382 105,432 18,382 18,282" fill="none"
-                 stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
-        <polyline points="18,282 105,232 192,282" fill="none"
-                  stroke="rgba(255,255,255,0.18)" stroke-width="1.5" stroke-linecap="round"/>
-        <!-- icon: open book / publication -->
-        <rect x="94" y="274" width="22" height="17" rx="2" fill="none"
-              stroke="rgba(255,255,255,0.4)" stroke-width="1.2"/>
+        <polygon points="105,232 192,282 192,382 105,432 18,382 18,282" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+        <polyline points="18,282 105,232 192,282" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1.5" stroke-linecap="round"/>
+        <rect x="94" y="274" width="22" height="17" rx="2" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1.2"/>
         <line x1="98" y1="280" x2="112" y2="280" stroke="rgba(255,255,255,0.55)" stroke-width="1"/>
         <line x1="98" y1="284" x2="112" y2="284" stroke="rgba(255,255,255,0.4)"  stroke-width="1"/>
         <line x1="98" y1="288" x2="107" y2="288" stroke="rgba(255,255,255,0.3)"  stroke-width="1"/>
         <line x1="68" y1="310" x2="142" y2="310" stroke="rgba(255,255,255,0.12)" stroke-width="0.8"/>
-        <text x="105" y="328" text-anchor="middle" font-size="13.5" font-weight="700"
-              fill="white" font-family="Inter,sans-serif">Research &amp; Talks</text>
-        <text x="105" y="347" text-anchor="middle" font-size="9.5"
-              fill="rgba(255,255,255,0.78)" font-family="Inter,sans-serif">IEEE Publications</text>
-        <text x="105" y="361" text-anchor="middle" font-size="9.5"
-              fill="rgba(255,255,255,0.78)" font-family="Inter,sans-serif">Technical Talks &amp; Workshops</text>
+        <text x="105" y="328" text-anchor="middle" font-size="13.5" font-weight="700" fill="white" font-family="Inter,sans-serif">Research &amp; Talks</text>
+        <text x="105" y="347" text-anchor="middle" font-size="9.5" fill="rgba(255,255,255,0.78)" font-family="Inter,sans-serif">IEEE Publications</text>
+        <text x="105" y="361" text-anchor="middle" font-size="9.5" fill="rgba(255,255,255,0.78)" font-family="Inter,sans-serif">Technical Talks &amp; Workshops</text>
         <line x1="85" y1="376" x2="125" y2="376" stroke="rgba(255,255,255,0.10)" stroke-width="0.8"/>
-
-        <!-- ── HEX 4: Cloud & DevOps ── -->
         <polygon points="293,232 380,282 380,382 293,432 206,382 206,282" fill="#C9A84C"/>
-        <polygon points="293,232 380,282 380,382 293,432 206,382 206,282" fill="none"
-                 stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
-        <polyline points="206,282 293,232 380,282" fill="none"
-                  stroke="rgba(255,255,255,0.18)" stroke-width="1.5" stroke-linecap="round"/>
-        <!-- icon: cloud with upward arrow -->
-        <path d="M282,287 Q278,280 286,278 Q285,270 296,272 Q301,265 309,271 Q318,268 317,278 Q323,279 321,287 Z"
-              fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="1.2" stroke-linejoin="round"/>
+        <polygon points="293,232 380,282 380,382 293,432 206,382 206,282" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+        <polyline points="206,282 293,232 380,282" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M282,287 Q278,280 286,278 Q285,270 296,272 Q301,265 309,271 Q318,268 317,278 Q323,279 321,287 Z" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="1.2" stroke-linejoin="round"/>
         <line x1="293" y1="287" x2="293" y2="282" stroke="rgba(255,255,255,0.3)" stroke-width="1.2"/>
-        <polyline points="290,284 293,281 296,284" fill="none"
-                  stroke="rgba(255,255,255,0.35)" stroke-width="1.2" stroke-linejoin="round"/>
+        <polyline points="290,284 293,281 296,284" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="1.2" stroke-linejoin="round"/>
         <line x1="256" y1="310" x2="330" y2="310" stroke="rgba(255,255,255,0.12)" stroke-width="0.8"/>
-        <text x="293" y="328" text-anchor="middle" font-size="13.5" font-weight="700"
-              fill="white" font-family="Inter,sans-serif">Cloud &amp; DevOps</text>
-        <text x="293" y="347" text-anchor="middle" font-size="9.5"
-              fill="rgba(255,255,255,0.85)" font-family="Inter,sans-serif">AWS · Serverless</text>
-        <text x="293" y="361" text-anchor="middle" font-size="9.5"
-              fill="rgba(255,255,255,0.85)" font-family="Inter,sans-serif">CI/CD &amp; Containerization</text>
+        <text x="293" y="328" text-anchor="middle" font-size="13.5" font-weight="700" fill="white" font-family="Inter,sans-serif">Cloud &amp; DevOps</text>
+        <text x="293" y="347" text-anchor="middle" font-size="9.5" fill="rgba(255,255,255,0.85)" font-family="Inter,sans-serif">AWS · Serverless</text>
+        <text x="293" y="361" text-anchor="middle" font-size="9.5" fill="rgba(255,255,255,0.85)" font-family="Inter,sans-serif">CI/CD &amp; Containerization</text>
         <line x1="273" y1="376" x2="313" y2="376" stroke="rgba(255,255,255,0.10)" stroke-width="0.8"/>
-
       </svg>
     </div>
     </div>
@@ -382,7 +361,7 @@ footer{background:var(--surface-1);border-top:1px solid var(--stroke);padding:1.
     <div class="timeline reveal">
       <div class="tl-item"><div class="tl-dot"></div><div class="tl-period">2024 &ndash; Present</div><div class="tl-role">Doctoral Researcher</div><div class="tl-org">University of North Dakota &middot; Grand Forks, ND</div><div class="tl-desc">Investigating physics-informed machine learning, quantum-classical hybrid computing, and LLM-driven agentic orchestration for power systems and distributed energy resources. Research addresses fundamental questions in reproducibility, physical constraint preservation, and intelligent grid automation across HPC and containerized environments.</div></div>
       <div class="tl-item"><div class="tl-dot"></div><div class="tl-period">2023 &ndash; 2026</div><div class="tl-role">Computer Scientist 2 &middot; Power Systems Research</div><div class="tl-org">Pacific Northwest National Laboratory &middot; Richland, WA</div><div class="tl-desc">Led selected technical components and applied R&amp;D across power grid analytics, cybersecurity infrastructure, and cloud ML deployment. Developed production-grade anomaly detection systems, DER interoperability frameworks using OpenFMB and MQTT, and CI/CD pipelines tied to automated cybersecurity maturity assessments. Contributed to DOE critical infrastructure initiatives including CEASER and the North American Energy Resilience Model.</div></div>
-      <div class="tl-item"><div class="tl-dot"></div><div class="tl-period">2023</div><div class="tl-role">Masters Research Intern</div><div class="tl-org">Pacific Northwest National Laboratory &middot; Richland, WA</div><div class="tl-desc">Deployed the ExaGO optimization toolkit for exascale power grid simulations runs on the Frontier supercomputer to cloud. Built CI/CD pipelines and containerized workflows using Docker and Singularity for reproducible multi-site scientific computing across DOE facilities and cloud platforms.</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-period">2023</div><div class="tl-role">Masters Research Intern</div><div class="tl-org">Pacific Northwest National Laboratory &middot; Richland, WA</div><div class="tl-desc">Deployed the ExaGO optimization toolkit for exascale power grid simulations on the Frontier supercomputer. Built CI/CD pipelines and containerized workflows using Docker and Singularity for reproducible multi-site scientific computing across DOE facilities and cloud platforms.</div></div>
       <div class="tl-item"><div class="tl-dot"></div><div class="tl-period">2021 &ndash; 2023</div><div class="tl-role">Graduate Research Assistant</div><div class="tl-org">University of North Dakota &middot; Grand Forks, ND</div><div class="tl-desc">Conducted FAA-funded ML research on unmanned aerial systems safety, GPS anomaly detection, and electromagnetic interference mitigation. Built GPU-accelerated deep learning pipelines on the UND Talon HPC cluster using CUDA, SLURM, and distributed training frameworks. Published peer-reviewed research on GPS false data injection detection, 5G interference mitigation, and a hierarchical software framework for UAS national airspace integration.</div></div>
       <div class="tl-item"><div class="tl-dot"></div><div class="tl-period">2019 &ndash; 2021</div><div class="tl-role">Technical Support Associate &amp; Service Delivery Specialist</div><div class="tl-org">IBM &middot; Bangalore, India</div><div class="tl-desc">Started as a Technical Support Associate resolving Red Hat Enterprise Linux and virtual machine issues, handling global outages and critical system incidents. Progressed to Service Delivery Specialist in Cloud Managed Backup, managing data recovery and disaster management operations using IBM Spectrum Protect, Veritas, and Veeam across IBM and enterprise client environments.</div></div>
     </div>
@@ -419,16 +398,50 @@ footer{background:var(--surface-1);border-top:1px solid var(--stroke);padding:1.
     <div class="hdr reveal"><div class="sec-eye">Publications</div><h2 class="sec-title">Selected Works</h2></div>
     <div class="pub-list">
       <div class="pub-item reveal"><div><div class="pub-venue">NeurIPS 2026 · Under Review</div><div class="pub-title">On the Limits of Reproducibility in Scientific Machine Learning: When Containers Fail to Preserve Physical Constraints</div><div class="pub-meta">J. P. Mohan, P. Ranganathan</div></div></div>
-      <div class="pub-item reveal d1"><div><div class="pub-venue">IEEE Cloud Summit 2025</div><div class="pub-title">Containerized LLM Deployment Architectures for Scientific Computing</div><div class="pub-meta">J. P. Mohan et al. &nbsp;&middot;&nbsp; doi: 10.1109/Cloud-Summit64795.2025.00027</div></div><a href="https://doi.org/10.1109/Cloud-Summit64795.2025.00027" class="pub-link" target="_blank" rel="noopener">View →</a></div>
-      <div class="pub-item reveal d1"><div><div class="pub-venue">IEEE CCWC 2024 &nbsp;&middot;&nbsp; pp. 198&ndash;206</div><div class="pub-title">Hierarchical Software Framework for Safe Unmanned Aerial Systems Integration into National Airspace (NAS)</div><div class="pub-meta">J. P. Mohan, P. Ranganathan, H. Reza &nbsp;&middot;&nbsp; doi: 10.1109/CCWC60891.2024.10427776</div></div><a href="https://ieeexplore.ieee.org/abstract/document/10427776" class="pub-link" target="_blank" rel="noopener">View →</a></div>
-      <div class="pub-item reveal d2"><div><div class="pub-venue">IEEE ESCS 2023 · Las Vegas, USA</div><div class="pub-title">False Data Injection (FDI) Modeling and Detection in Global Positioning Systems (GPS) for UAS Environments</div><div class="pub-meta">J. P. Mohan, P. Ranganathan &nbsp;&middot;&nbsp; doi: 10.1109/ESCS.2023.10487453</div></div><a href="https://ieeexplore.ieee.org/abstract/document/10487453" class="pub-link" target="_blank" rel="noopener">View →</a></div>
-      <div class="pub-item reveal d2"><div><div class="pub-venue">IEEE eIT 2022 &nbsp;&middot;&nbsp; pp. 446&ndash;454</div><div class="pub-title">Cyber Security Threats for 5G Networks</div><div class="pub-meta">J. P. Mohan, N. Sugunaraj, P. Ranganathan &nbsp;&middot;&nbsp; doi: 10.1109/eit53891.2022.9813965</div></div><a href="https://ieeexplore.ieee.org/abstract/document/9813965" class="pub-link" target="_blank" rel="noopener">View →</a></div>
+      <div class="pub-item reveal d1"><div><div class="pub-venue">IEEE Cloud Summit 2025</div><div class="pub-title">Containerized LLM Deployment Architectures for Scientific Computing</div><div class="pub-meta">J. P. Mohan et al. &nbsp;&middot;&nbsp; doi: 10.1109/Cloud-Summit64795.2025.00027</div></div><a href="https://doi.org/10.1109/Cloud-Summit64795.2025.00027" class="pub-link" target="_blank" rel="noopener">View &rarr;</a></div>
+      <div class="pub-item reveal d1"><div><div class="pub-venue">IEEE CCWC 2024 &nbsp;&middot;&nbsp; pp. 198&ndash;206</div><div class="pub-title">Hierarchical Software Framework for Safe Unmanned Aerial Systems Integration into National Airspace (NAS)</div><div class="pub-meta">J. P. Mohan, P. Ranganathan, H. Reza &nbsp;&middot;&nbsp; doi: 10.1109/CCWC60891.2024.10427776</div></div><a href="https://ieeexplore.ieee.org/abstract/document/10427776" class="pub-link" target="_blank" rel="noopener">View &rarr;</a></div>
+      <div class="pub-item reveal d2"><div><div class="pub-venue">IEEE ESCS 2023 · Las Vegas, USA</div><div class="pub-title">False Data Injection (FDI) Modeling and Detection in Global Positioning Systems (GPS) for UAS Environments</div><div class="pub-meta">J. P. Mohan, P. Ranganathan &nbsp;&middot;&nbsp; doi: 10.1109/ESCS.2023.10487453</div></div><a href="https://ieeexplore.ieee.org/abstract/document/10487453" class="pub-link" target="_blank" rel="noopener">View &rarr;</a></div>
+      <div class="pub-item reveal d2"><div><div class="pub-venue">IEEE eIT 2022 &nbsp;&middot;&nbsp; pp. 446&ndash;454</div><div class="pub-title">Cyber Security Threats for 5G Networks</div><div class="pub-meta">J. P. Mohan, N. Sugunaraj, P. Ranganathan &nbsp;&middot;&nbsp; doi: 10.1109/eit53891.2022.9813965</div></div><a href="https://ieeexplore.ieee.org/abstract/document/9813965" class="pub-link" target="_blank" rel="noopener">View &rarr;</a></div>
     </div>
   </div>
 </section>
 <div class="rule"></div>
 
-<section class="sec sec-alt" id="contact">
+<!-- ── Writing / Blog Preview ── -->
+<section class="sec sec-alt" id="writing">
+  <div class="container">
+    <div class="hdr reveal">
+      <div class="sec-eye">Writing</div>
+      <h2 class="sec-title">Research Blog</h2>
+      <p class="sec-sub">Notes on scientific AI infrastructure, HPC workflows, reproducibility in machine learning, and energy systems research.</p>
+    </div>
+    <div class="reveal">
+      <a href="esro-blog-post.html" class="writing-card">
+        <div class="writing-card-left">
+          <div class="writing-card-icon">
+            <span class="icon" style="width:24px;height:24px;"><svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/><path d="M7 8h2M11 8h6M7 11h4M13 11h4"/></svg></span>
+          </div>
+        </div>
+        <div class="writing-card-body">
+          <div class="writing-card-venue">Research Infrastructure &nbsp;&middot;&nbsp; HPC &amp; Systems</div>
+          <div class="writing-card-title">Energy Systems Runtime Observatory</div>
+          <div class="writing-card-excerpt">A lightweight, open source real time monitoring platform providing unified observability across local machines, Docker containers, and HPC clusters for scientific AI workflows.</div>
+          <div class="tag-row" style="margin-top:0.75rem"><span class="tag">Streamlit</span><span class="tag">Docker</span><span class="tag">SLURM</span><span class="tag">Scientific ML</span></div>
+        </div>
+        <div class="writing-card-meta">
+          <span class="writing-date">2026</span>
+          <span class="writing-read">Read &rarr;</span>
+        </div>
+      </a>
+    </div>
+    <div style="margin-top:1.8rem" class="reveal d1">
+      <a href="blog.html" class="btn btn-outline">View All Posts</a>
+    </div>
+  </div>
+</section>
+<div class="rule"></div>
+
+<section class="sec sec-white" id="contact">
   <div class="container"><div class="contact-wrap reveal">
     <div class="sec-eye" style="justify-content:center;">Connect</div>
     <h2 class="sec-title">Let's Collaborate</h2>
@@ -452,23 +465,17 @@ document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 const ht=document.getElementById('heroText');
 function padHero(){if(window.innerWidth<=960){ht.style.paddingLeft='2rem';ht.style.paddingRight='2rem'}else{const off=Math.max(0,(window.innerWidth-1100)/2)+32;ht.style.paddingLeft=off+'px';ht.style.paddingRight='3.5rem'}}
 padHero();window.addEventListener('resize',padHero);
-
-// Women climbing parallax — image moves top→bottom as you scroll through experience section
 (function(){
-  var expSec = document.querySelector('.experience-sec');
-  if(!expSec) return;
+  var expSec=document.querySelector('.experience-sec');
+  if(!expSec)return;
   function onScroll(){
-    var rect = expSec.getBoundingClientRect();
-    var vh   = window.innerHeight;
-    // progress: 0 when section top enters viewport, 1 when section bottom leaves
-    var progress = 1 - (rect.bottom / (rect.height + vh));
-    var clamped  = Math.max(0, Math.min(1, progress));
-    // background-position-y moves from 15% (top of journey) to 85% (end of journey)
-    var yPct = 15 + clamped * 70;
-    expSec.style.backgroundPosition = 'right ' + yPct + '%';
+    var rect=expSec.getBoundingClientRect(),vh=window.innerHeight;
+    var progress=1-(rect.bottom/(rect.height+vh));
+    var clamped=Math.max(0,Math.min(1,progress));
+    expSec.style.backgroundPosition='right '+(15+clamped*70)+'%';
   }
-  window.addEventListener('scroll', onScroll, {passive:true});
-  onScroll(); // set initial position
+  window.addEventListener('scroll',onScroll,{passive:true});
+  onScroll();
 })();
 </script>
 </body>
