@@ -1,21 +1,3 @@
-<!-- ── Nav ── -->
-<!--
-// Nav
-// Reveal on scroll
-// Filter
--->
-<!-- ── Filter bar ── -->
-<!--
-// Filter
--->
-<!-- ── Blog grid ── -->
-<!--
-// Blog grid
--->
-<!-- ── Featured card (first post, full width) ── -->
-<!--
-// Featured card
--->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -191,23 +173,6 @@ footer{background:var(--surface-1);border-top:1px solid var(--stroke);padding:1.
 <div class="blog-grid-wrap">
   <div class="blog-grid" id="blogGrid">
 
-    <!--
-    ═══════════════════════════════════════════════════════════
-    HOW TO ADD A NEW POST
-    ═══════════════════════════════════════════════════════════
-    Copy the block below, update:
-      data-category  → one of: infrastructure | hpc | ml | energy
-      .blog-card-venue  → category label shown on card
-      .blog-card-title  → post title
-      .blog-card-excerpt → 2-3 sentence summary
-      .blog-card-meta   → "Month YYYY · N min read"
-      .tag items        → relevant tags
-      href on <a>       → path to the post HTML file
-
-    The first post uses class="blog-card featured" for full-width.
-    All subsequent posts use class="blog-card" for the 2-col grid.
-    ═══════════════════════════════════════════════════════════
-    -->
 
     <!-- POST 1: ESRO (featured, full width) -->
     <a href="esro-blog-post.html" class="blog-card featured reveal" data-category="infrastructure hpc">
@@ -237,12 +202,12 @@ footer{background:var(--surface-1);border-top:1px solid var(--stroke);padding:1.
     </a>
 
     <!-- POST 2: DER LLM Framework -->
-    <a href="der-llm-blog-post.html" class="blog-card reveal d1" data-category="infrastructure ml energy">
+    <a href="containerized-llm-blog.html" class="blog-card reveal d1" data-category="infrastructure ml energy">
       <img src="images/arch.png" alt="DER LLM Titlecard" class="blog-card-img" />
       <div class="blog-card-body">
         <div class="blog-card-venue">LLM Deployment &nbsp;&middot;&nbsp; Energy Systems</div>
-        <div class="blog-card-title">Containerized and Accountable: LLM Deployment for Critical Infrastructure</div>
-        <div class="blog-card-excerpt">A containerized deployment architecture for large language models in distributed energy resource analytics, with physics constraint validation against the IEEE 118 bus benchmark. Published at IEEE Cloud Summit 2025.</div>
+        <div class="blog-card-title">From Docker to Multi-Cloud HPC: Securing LLM Workflows for Critical Infrastructure</div>
+        <div class="blog-card-excerpt">How a dual-container architecture deploys large language models across AWS, GCP, and Azure for energy grid analytics, with automated security testing, ML-driven insights, and a path to HPC at national laboratories. Published at IEEE Cloud Summit 2025.</div>
         <div class="tag-row">
           <span class="tag">Containerized LLM</span>
           <span class="tag">DER Analytics</span>
