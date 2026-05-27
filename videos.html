@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Videos &middot; Jaya Preethi Mohan</title>
+<meta name="description" content="Technical videos on scientific AI reproducibility, HPC infrastructure, containerized ML workflows, and CUDA internals." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --surface-0:#F4F6F9;--surface-1:#FFFFFF;--surface-2:#EEF1F6;
+  --stroke:#DDE2EC;--stroke-md:#C8CFE0;
+  --grn:#1C5F43;--grn-mid:#237A54;--grn-light:#E8F4EF;--grn-xl:#F2FAF6;
+  --gld:#8B6914;--gld-light:#FBF5E6;
+  --ink-0:#111827;--ink-1:#374151;--ink-2:#6B7280;--ink-3:#9CA3AF;
+  --serif:'DM Serif Display',Georgia,serif;
+  --sans:'Inter',system-ui,sans-serif;
+  --mono:'JetBrains Mono','Courier New',monospace;
+  --nav-h:64px
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:var(--sans);background:var(--surface-0);color:var(--ink-1);line-height:1.7;font-weight:400;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+::selection{background:var(--grn-light);color:var(--grn)}
+a{color:var(--grn);text-decoration:none;transition:color .2s}
+a:hover{color:var(--gld)}
+
+/* Nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);background:rgba(255,255,255,0.92);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--stroke)}
+nav .inner{max-width:1100px;margin:0 auto;padding:0 2rem;height:100%;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{font-family:var(--sans);font-size:0.82rem;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;color:var(--ink-0)}
+.nav-logo em{font-style:normal;color:var(--grn)}
+.nav-links{display:flex;gap:2rem;list-style:none}
+.nav-links a{font-size:0.72rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-2);position:relative;transition:color .2s}
+.nav-links a::after{content:'';position:absolute;bottom:-6px;left:0;width:0;height:1.5px;background:var(--grn);transition:width .3s ease}
+.nav-links a:hover,.nav-links a.active{color:var(--grn)}
+.nav-links a:hover::after,.nav-links a.active::after{width:100%}
+.hamburger{display:none;background:none;border:none;cursor:pointer;width:24px;height:16px;position:relative}
+.hamburger span{display:block;width:100%;height:1.5px;background:var(--ink-0);position:absolute;left:0;transition:all .3s}
+.hamburger span:nth-child(1){top:0}.hamburger span:nth-child(2){top:7px}.hamburger span:nth-child(3){top:14px}
+.hamburger.open span:nth-child(1){top:7px;transform:rotate(45deg)}
+.hamburger.open span:nth-child(2){opacity:0}
+.hamburger.open span:nth-child(3){top:7px;transform:rotate(-45deg)}
+
+/* Hero */
+.page-hero{padding-top:var(--nav-h);background:var(--surface-1);border-bottom:1px solid var(--stroke);position:relative;overflow:hidden}
+.page-hero::before{content:'';position:absolute;top:-220px;right:-160px;width:520px;height:520px;background:radial-gradient(circle,rgba(28,95,67,0.07) 0%,transparent 67%);pointer-events:none}
+.page-hero-inner{max-width:1100px;margin:0 auto;padding:4rem 2rem 3rem;position:relative}
+.page-eye{font-family:var(--mono);font-size:0.62rem;font-weight:500;letter-spacing:0.16em;text-transform:uppercase;color:var(--grn);margin-bottom:0.55rem;display:flex;align-items:center;gap:0.5rem}
+.page-title{font-family:var(--serif);font-size:clamp(2.2rem,4vw,3.2rem);font-weight:400;color:var(--ink-0);line-height:1.1;margin-bottom:1rem}
+.page-sub{font-size:0.93rem;color:var(--ink-2);line-height:1.85;max-width:680px}
+
+/* Content */
+.page-content{max-width:1100px;margin:0 auto;padding:3rem 2rem 5rem}
+
+/* Video grid */
+.video-grid{display:flex;flex-direction:column;gap:1.5rem}
+
+/* Video card */
+.v-card{display:grid;grid-template-columns:380px 1fr;background:var(--surface-1);border:1px solid var(--stroke);overflow:hidden;text-decoration:none;color:inherit;position:relative;transition:border-color .25s,box-shadow .25s,transform .25s}
+.v-card::before{content:'';position:absolute;top:0;left:0;bottom:0;width:3px;background:transparent;transition:background .25s}
+.v-card:hover::before{background:linear-gradient(180deg,var(--grn),var(--gld))}
+.v-card:hover{border-color:var(--stroke-md);transform:translateX(3px);box-shadow:0 4px 18px rgba(0,0,0,0.06)}
+
+/* Thumbnail */
+.v-thumb{position:relative;overflow:hidden;background:#0a0a0a}
+.v-thumb img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .4s ease}
+.v-card:hover .v-thumb img{transform:scale(1.03)}
+.v-thumb-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.15);opacity:0;transition:opacity .3s}
+.v-card:hover .v-thumb-overlay{opacity:1}
+.v-play-btn{width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,0.95);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,0.2);transition:transform .2s}
+.v-card:hover .v-play-btn{transform:scale(1.08)}
+.v-play-btn svg{width:22px;height:22px;margin-left:3px}
+.v-duration{position:absolute;bottom:10px;right:10px;font-family:var(--mono);font-size:0.62rem;letter-spacing:0.04em;background:rgba(0,0,0,0.78);color:#fff;padding:0.2rem 0.5rem}
+
+/* Card body */
+.v-body{padding:1.6rem 1.8rem;display:flex;flex-direction:column;justify-content:center}
+.v-venue{font-family:var(--mono);font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gld);margin-bottom:0.35rem}
+.v-title{font-family:var(--serif);font-size:1.25rem;color:var(--ink-0);line-height:1.3;margin-bottom:0.55rem;transition:color .2s}
+.v-card:hover .v-title{color:var(--grn)}
+.v-desc{font-size:0.84rem;color:var(--ink-2);line-height:1.8;margin-bottom:1rem}
+.tag-row{display:flex;flex-wrap:wrap;gap:0.35rem}
+.tag{font-family:var(--mono);font-size:0.56rem;letter-spacing:0.04em;padding:0.24rem 0.55rem;background:var(--grn-xl);color:var(--grn);border:1px solid rgba(28,95,67,0.12)}
+.v-meta{display:flex;align-items:center;gap:1rem;margin-top:1rem}
+.v-date{font-family:var(--mono);font-size:0.58rem;letter-spacing:0.06em;color:var(--ink-3)}
+.v-watch{font-family:var(--mono);font-size:0.6rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--grn);transition:color .2s}
+.v-card:hover .v-watch{color:var(--gld)}
+
+/* Subscribe banner */
+.subscribe-banner{margin-top:3rem;padding:2.2rem 2.5rem;background:var(--surface-1);border:1px solid var(--stroke);display:flex;align-items:center;justify-content:space-between;gap:2rem}
+.subscribe-banner-text{flex:1}
+.subscribe-banner-label{font-family:var(--mono);font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:0.3rem}
+.subscribe-banner-title{font-family:var(--serif);font-size:1.2rem;color:var(--ink-0);line-height:1.35;margin-bottom:0.25rem}
+.subscribe-banner-desc{font-size:0.82rem;color:var(--ink-2);line-height:1.7}
+.yt-btn{display:inline-flex;align-items:center;gap:0.5rem;padding:0.65rem 1.3rem;border:1.5px solid #c4302b;color:#c4302b;font-family:var(--mono);font-size:0.62rem;letter-spacing:0.06em;text-transform:uppercase;transition:background .2s,color .2s,transform .2s;text-decoration:none;flex-shrink:0}
+.yt-btn:hover{background:#c4302b;color:#fff;transform:translateY(-2px)}
+.yt-btn svg{width:16px;height:16px;flex-shrink:0}
+
+/* Coming soon */
+.coming-soon{margin-top:1.5rem;padding:2rem;background:var(--surface-2);border:1px dashed var(--stroke-md);text-align:center}
+.coming-soon-title{font-family:var(--serif);font-size:1rem;color:var(--ink-2);margin-bottom:0.3rem}
+.coming-soon-text{font-size:0.82rem;color:var(--ink-3);line-height:1.7}
+
+/* Reveal */
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s ease}
+.reveal.on{opacity:1;transform:none}
+.reveal.d1{transition-delay:.1s}.reveal.d2{transition-delay:.2s}
+
+/* Footer */
+footer{background:var(--surface-1);border-top:1px solid var(--stroke);padding:1.6rem 0;text-align:center}
+.foot-txt{font-family:var(--mono);font-size:0.6rem;letter-spacing:0.04em;color:var(--ink-3)}
+.foot-txt em{font-style:normal;color:var(--grn)}
+
+@media(max-width:960px){
+  .v-card{grid-template-columns:1fr}
+  .v-thumb{height:220px}
+  .subscribe-banner{flex-direction:column;text-align:center}
+}
+@media(max-width:640px){
+  .nav-links{display:none;flex-direction:column;gap:1.5rem;position:fixed;top:var(--nav-h);left:0;right:0;bottom:0;background:var(--surface-1);padding:2rem;border-top:1px solid var(--stroke);z-index:190}
+  .nav-links.open{display:flex}
+  .hamburger{display:block}
+  .v-thumb{height:200px}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="inner">
+    <a href="index.html" class="nav-logo">Jaya Preethi<em>.</em>Mohan</a>
+    <button class="hamburger" id="ham" aria-label="Menu"><span></span><span></span><span></span></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html#about">About</a></li>
+      <li><a href="index.html#research">Research</a></li>
+      <li><a href="index.html#experience">Experience</a></li>
+      <li><a href="index.html#skills">Expertise</a></li>
+      <li><a href="index.html#awards">Awards</a></li>
+      <li><a href="index.html#publications">Publications</a></li>
+      <li><a href="blog.html">Blog</a></li>
+      <li><a href="videos.html" class="active">Videos</a></li>
+      <li><a href="index.html#contact">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="page-hero">
+  <div class="page-hero-inner">
+    <div class="page-eye">Videos</div>
+    <h1 class="page-title">Technical Videos</h1>
+    <p class="page-sub">Walkthroughs on scientific AI reproducibility, GPU internals, containerized ML workflows, and HPC infrastructure. Built for practitioners who want the mechanism explained, not just the headline.</p>
+  </div>
+</header>
+
+<div class="page-content">
+  <div class="video-grid">
+
+    <!-- Video 1 -->
+    <a href="video-blog.html" class="v-card reveal">
+      <div class="v-thumb">
+        <img src="https://i.ytimg.com/vi/kNNUwgewJ-c/maxresdefault.jpg" alt="Why Containers Don't Guarantee AI Reproducibility thumbnail"
+             onerror="this.src='https://i.ytimg.com/vi/kNNUwgewJ-c/hqdefault.jpg'" />
+        <div class="v-thumb-overlay">
+          <div class="v-play-btn">
+            <svg viewBox="0 0 24 24" fill="#1C5F43"><polygon points="8 5 20 12 8 19"/></svg>
+          </div>
+        </div>
+        <div class="v-duration">2:31</div>
+      </div>
+      <div class="v-body">
+        <div class="v-venue">Scientific ML &nbsp;&middot;&nbsp; CUDA &nbsp;&middot;&nbsp; Containers</div>
+        <div class="v-title">Why Containers Don't Guarantee AI Reproducibility</div>
+        <div class="v-desc">CUDA parallelizes operations across thousands of GPU threads, and the order those threads accumulate values isn't fixed. In floating-point arithmetic, order matters. This video walks through how that breaks scientific reproducibility inside identical containers.</div>
+        <div class="tag-row">
+          <span class="tag">CUDA</span>
+          <span class="tag">Floating-Point</span>
+          <span class="tag">Containers</span>
+          <span class="tag">Reproducibility</span>
+          <span class="tag">Scientific ML</span>
+        </div>
+        <div class="v-meta">
+          <span class="v-date">May 2026</span>
+          <span class="v-watch">Watch &rarr;</span>
+        </div>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- Coming soon -->
+  <div class="coming-soon reveal d1">
+    <div class="coming-soon-title">More videos in progress</div>
+    <div class="coming-soon-text">Upcoming topics include cuDNN algorithm selection, physics-informed model validation, and distributed training reproducibility on HPC clusters.</div>
+  </div>
+
+  <!-- Subscribe -->
+  <div class="subscribe-banner reveal d2">
+    <div class="subscribe-banner-text">
+      <div class="subscribe-banner-label">YouTube Channel</div>
+      <div class="subscribe-banner-title">Subscribe for new videos on scientific ML and AI infrastructure</div>
+      <div class="subscribe-banner-desc">Technical walkthroughs published alongside companion blog posts with full write-ups.</div>
+    </div>
+    <a href="https://www.youtube.com/@jayapreethimohan" class="yt-btn" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814z"/><polygon points="9.545 15.568 15.818 12 9.545 8.432" fill="#fff"/></svg>
+      Subscribe
+    </a>
+  </div>
+</div>
+
+<footer>
+  <div style="max-width:1100px;margin:0 auto;padding:0 2rem">
+    <p class="foot-txt">&copy; 2026 <em>Jaya Preethi Mohan</em> &middot; Built with precision</p>
+  </div>
+</footer>
+
+<script>
+const ham=document.getElementById('ham'),nl=document.getElementById('navLinks');
+ham.addEventListener('click',()=>{ham.classList.toggle('open');nl.classList.toggle('open')});
+nl.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{ham.classList.remove('open');nl.classList.remove('open')}));
+const io=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('on')}),{threshold:0.06});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>
