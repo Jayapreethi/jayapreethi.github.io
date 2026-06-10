@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Building an Offline-First Literature Intelligence System for HPC · Jaya Preethi Mohan</title>
+<meta name="description" content="How I designed the CO2M pipeline inside Materials Copilot to run without internet access, survive preemption, and still give researchers something useful at the end." />
+<meta name="author" content="Jaya Preethi Mohan" />
+<meta property="og:title" content="Building an Offline-First Literature Intelligence System for HPC Environments" />
+<meta property="og:description" content="The CO2M Literature Intelligence System: offline-first design for scientific research infrastructure." />
+<meta property="og:type" content="article" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+:root {
+  --surface-0: #F4F6F9;
+  --surface-1: #FFFFFF;
+  --surface-2: #EEF1F6;
+  --stroke: #DDE2EC;
+  --stroke-md: #C8CFE0;
+  --grn: #1C5F43;
+  --grn-mid: #237A54;
+  --grn-light: #E8F4EF;
+  --grn-xlight: #F2FAF6;
+  --gld: #8B6914;
+  --gld-light: #FBF5E6;
+  --ink-0: #111827;
+  --ink-1: #374151;
+  --ink-2: #6B7280;
+  --ink-3: #9CA3AF;
+  --serif: 'DM Serif Display', Georgia, serif;
+  --sans: 'Inter', system-ui, sans-serif;
+  --mono: 'JetBrains Mono', 'Courier New', monospace;
+  --nav-h: 64px;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:var(--sans);background:var(--surface-0);color:var(--ink-1);line-height:1.7;font-weight:400;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+::selection{background:var(--grn-light);color:var(--grn)}
+.container{max-width:1100px;margin:0 auto;padding:0 2rem;box-sizing:border-box}
+a{color:var(--grn);text-decoration:none;transition:color .2s}
+a:hover{color:var(--gld)}
+.icon{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+.icon svg{width:100%;height:100%;fill:currentColor}
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);background:rgba(255,255,255,0.92);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--stroke);contain:layout}
+nav .inner{max-width:1100px;margin:0 auto;padding:0 2rem;height:100%;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{font-family:var(--sans);font-size:0.82rem;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;color:var(--ink-0)}
+.nav-logo em{font-style:normal;color:var(--grn)}
+.nav-links{display:flex;gap:2rem;list-style:none}
+.nav-links a{font-size:0.72rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-2);position:relative;transition:color .2s}
+.nav-links a::after{content:'';position:absolute;bottom:-6px;left:0;width:0;height:1.5px;background:var(--grn);transition:width .3s ease}
+.nav-links a:hover{color:var(--grn)}
+.nav-links a:hover::after{width:100%}
+.hamburger{display:none;background:none;border:none;cursor:pointer;width:24px;height:16px;position:relative}
+.hamburger span{display:block;width:100%;height:1.5px;background:var(--ink-0);position:absolute;left:0;transition:all .3s}
+.hamburger span:nth-child(1){top:0}.hamburger span:nth-child(2){top:7px}.hamburger span:nth-child(3){top:14px}
+.hamburger.open span:nth-child(1){top:7px;transform:rotate(45deg)}
+.hamburger.open span:nth-child(2){opacity:0}
+.hamburger.open span:nth-child(3){top:7px;transform:rotate(-45deg)}
+.blog-hero{padding-top:calc(var(--nav-h) + 5rem);padding-bottom:4.2rem;background:var(--surface-1);border-bottom:1px solid var(--stroke);position:relative;overflow:hidden;word-wrap:break-word}
+.blog-hero::before{content:'';position:absolute;top:-220px;left:-160px;width:520px;height:520px;background:radial-gradient(circle,rgba(28,95,67,0.08) 0%,transparent 67%);pointer-events:none}
+.back-link{display:inline-flex;font-family:var(--mono);font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-3);margin-bottom:1.4rem}
+.back-link:hover{color:var(--grn)}
+.blog-title{font-family:var(--serif);font-size:clamp(2.25rem,5.5vw,4.8rem);font-weight:400;color:var(--ink-0);line-height:1.05;max-width:930px;margin-bottom:1.1rem;overflow-wrap:break-word;word-break:break-word}
+.blog-title em{font-style:italic;color:var(--grn)}
+.blog-sub{font-size:0.98rem;color:var(--ink-2);line-height:1.85;max-width:740px;margin-bottom:1.4rem;overflow-wrap:break-word;word-break:break-word}
+.blog-main{padding:4.6rem 0 5.5rem}
+.blog-grid{display:grid;grid-template-columns:minmax(0,1fr) 250px;gap:3rem;align-items:start}
+.article-card{background:var(--surface-1);border:1px solid var(--stroke);padding:clamp(1.8rem,4vw,4rem);box-shadow:0 6px 24px rgba(0,0,0,0.04)}
+.article-card h2{font-family:var(--serif);font-size:clamp(1.75rem,3vw,2.35rem);font-weight:400;color:var(--ink-0);line-height:1.16;margin:3.1rem 0 1rem;overflow-wrap:break-word;word-break:break-word}
+.article-card h2:first-child{margin-top:0}
+.article-card h3{font-family:var(--sans);font-size:0.92rem;font-weight:600;color:var(--grn);margin:1.9rem 0 0.55rem;overflow-wrap:break-word}
+.article-card p{font-size:0.94rem;color:var(--ink-1);line-height:1.9;margin-bottom:1rem;text-align:justify;overflow-wrap:break-word;word-break:break-word}
+.article-card ul{margin:0 0 1.3rem 1.2rem}
+.article-card li{font-size:0.9rem;color:var(--ink-1);margin-bottom:0.45rem;line-height:1.75;overflow-wrap:break-word;word-break:break-word}
+.callout{margin:2rem 0;padding:1.35rem 1.55rem;background:var(--grn-xlight);border-left:3px solid var(--grn);color:var(--grn);font-family:var(--serif);font-size:1.3rem;line-height:1.45;overflow-wrap:break-word;word-break:break-word}
+.figure{margin:2.2rem 0;background:var(--surface-1);border:1px solid var(--stroke);padding:0.75rem;overflow:hidden}
+.figure img{display:block;width:100%;height:auto;max-width:100%;object-fit:contain}
+.caption{font-family:var(--mono);font-size:0.58rem;letter-spacing:0.04em;color:var(--ink-3);margin-top:0.65rem;padding:0 0.2rem}
+.code-block{background:var(--surface-2);border:1px solid var(--stroke);padding:1rem;border-radius:6px;font-family:var(--mono);font-size:0.85rem;overflow-x:auto;margin:1.2rem 0;line-height:1.6;white-space:pre-wrap;word-break:break-word}
+.sidebar{position:sticky;top:calc(var(--nav-h) + 2rem);background:var(--surface-1);border:1px solid var(--stroke);padding:1.35rem;max-width:100%;overflow:hidden}
+.sidebar-title{font-family:var(--mono);font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--grn);margin-bottom:0.8rem}
+.sidebar a{display:block;font-size:0.78rem;color:var(--ink-2);padding:0.62rem 0;border-bottom:1px solid var(--stroke);overflow-wrap:break-word;word-break:break-word}
+.sidebar a:last-child{border-bottom:none}
+.sidebar a:hover{color:var(--grn)}
+.author-note{margin-top:2.5rem;padding-top:1.4rem;border-top:1px solid var(--stroke);font-family:var(--mono);font-size:0.6rem;letter-spacing:0.04em;color:var(--ink-3)}
+footer{background:var(--surface-1);border-top:1px solid var(--stroke);padding:1.6rem 0;text-align:center}
+.foot-txt{font-family:var(--mono);font-size:0.6rem;letter-spacing:0.04em;color:var(--ink-3)}
+.foot-txt em{font-style:normal;color:var(--grn)}
+@media (max-width: 960px) {
+  .blog-grid { grid-template-columns: 1fr; }
+  .sidebar { position: static; order: -1; }
+}
+@media (max-width: 768px) {
+  .blog-grid { grid-template-columns: 1fr; gap: 2rem; }
+  .sidebar { position: static; order: -1; margin-bottom: 2rem; }
+}
+@media (max-width: 360px) {
+  .container { padding: 0 1rem; }
+  .blog-hero { padding-top: calc(var(--nav-h) + 1.5rem); padding-bottom: 1.5rem; }
+  .blog-title { font-size: 1.5rem; }
+  .blog-sub { font-size: 0.8rem; }
+  .article-card { padding: 1rem; }
+  .article-card h2 { font-size: 1.2rem; margin: 1.5rem 0 0.6rem; }
+  .article-card p { font-size: 0.82rem; }
+  .code-block { font-size: 0.7rem; padding: 0.6rem; }
+  .callout { font-size: 1rem; padding: 0.9rem 1rem; }
+  .figure { margin: 1rem 0; padding: 0.4rem; }
+  .sidebar { padding: 0.8rem; }
+}
+  nav .inner { padding: 0 1.2rem; }
+  .container { padding: 0 1.2rem; }
+  .nav-links {
+    display: none; flex-direction: column; gap: 1.5rem;
+    position: fixed; top: var(--nav-h); left: 0; right: 0; bottom: 0;
+    background: var(--surface-1); padding: 2rem;
+    border-top: 1px solid var(--stroke); z-index: 190;
+    overflow-y: auto;
+  }
+  .nav-links.open { display: flex; }
+  .hamburger { display: block; }
+  .blog-hero { padding-top: calc(var(--nav-h) + 2rem); padding-bottom: 2rem; }
+  .blog-title { font-size: 1.75rem; line-height: 1.2; }
+  .blog-sub { font-size: 0.85rem; }
+  .article-card { padding: 1.2rem; box-shadow: none; border: 1px solid var(--stroke); }
+  .article-card h2 { font-size: 1.35rem; margin: 2rem 0 0.75rem; }
+  .article-card h3 { font-size: 0.85rem; margin: 1.5rem 0 0.4rem; }
+  .article-card p { font-size: 0.88rem; line-height: 1.8; }
+  .article-card ul { margin: 0 0 1rem 1rem; }
+  .article-card li { font-size: 0.83rem; margin-bottom: 0.35rem; }
+  .callout { font-size: 1.1rem; padding: 1rem 1.2rem; margin: 1.5rem 0; }
+  .figure { margin: 1.5rem 0; padding: 0.5rem; }
+  .figure img { width: 100%; height: auto; }
+  .caption { font-size: 0.54rem; margin-top: 0.5rem; }
+  .code-block { font-size: 0.75rem; padding: 0.8rem; margin: 1rem 0; line-height: 1.5; }
+  .sidebar { padding: 1rem; border: 1px solid var(--stroke); }
+  .sidebar-title { font-size: 0.55rem; margin-bottom: 0.6rem; }
+  .sidebar a { font-size: 0.72rem; padding: 0.5rem 0; }
+  .author-note { font-size: 0.54rem; margin-top: 1.5rem; }
+  .back-link { font-size: 0.55rem; margin-bottom: 1rem; }
+}
+</style>
+</head>
+<body>
+<nav>
+  <div class="inner">
+    <a href="index.html#top" class="nav-logo">Jay<em>.</em>Mohan</a>
+    <button class="hamburger" id="ham" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html#about">About</a></li>
+      <li><a href="index.html#research">Research</a></li>
+      <li><a href="index.html#experience">Experience</a></li>
+      <li><a href="index.html#skills">Expertise</a></li>
+      <li><a href="index.html#publications">Publications</a></li>
+      <li><a href="blog.html">Blog</a></li>
+      <li><a href="index.html#contact">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+<header class="blog-hero">
+  <div class="container">
+    <a class="back-link" href="blog.html">← Back to blog</a>
+    <h1 class="blog-title">Building an Offline-First Literature Intelligence System for HPC Environments</h1>
+    <p class="blog-sub">How I designed the CO2M pipeline inside Materials Copilot to run without internet access, survive preemption, and still give researchers something useful at the end.</p>
+    <a href="blog.html" style="display:inline-block;margin-top:1.2rem;padding:1.1rem 1.5rem;background:var(--surface-2);border:1px solid var(--stroke);border-radius:7px;text-decoration:none;color:var(--grn);transition:box-shadow .2s;font-family:var(--serif);font-size:1.1rem;font-weight:500;">Research Blogs</a>
+  </div>
+</header>
+<main class="blog-main">
+  <div class="container">
+    <div class="blog-grid">
+      <article class="article-card">
+        <h2 id="the-problem">The Problem: Researchers Drowning in PDFs, Clusters Optimized for Batch Jobs</h2>
+        <p>When you work on scientific computing infrastructure, whether at a national lab or a university HPC cluster, you quickly learn that most ML tools are built for the cloud and quietly assume things that simply aren't true on your system. They assume outbound internet access. They assume you can call an API mid-job. They assume your job runs to completion without being preempted. They assume someone will be watching a terminal.</p>
+        <p>I ran into all of these assumptions when I started building <strong>Materials Copilot</strong>, a larger project aimed at building a RAG-powered research assistant for materials science workflows. The first component I shipped was not the chatbot itself but the offline literature intelligence layer: the <strong>CO2M Literature Intelligence System</strong>, focused on carbon dioxide capture and mineralization papers. Getting it to actually work in an HPC context required rethinking a few things that are usually taken for granted.</p>
+        <p>The CO2M corpus is 47 scientific papers on carbon dioxide capture and mineralization. That sounds small, but 47 dense materials science PDFs, full of domain jargon, compound names, experimental conditions, and citations, is genuinely hard to navigate without tooling. Researchers need to answer questions like: which papers cover electrochemical mineralization? What are the temporal trends in sorbent research? Which documents are most relevant to a specific concept like "direct air capture"?</p>
+        <p>The obvious answer in 2024 is: build a RAG pipeline and put a chat interface on it. And that works fine on a laptop with a stable internet connection. On many SLURM-based HPC systems, especially restricted or air-gapped environments, that design becomes fragile quickly:</p>
+        <ul>
+          <li>No outbound API calls during a compute job</li>
+          <li>Long queue times mean you can't iterate interactively</li>
+          <li>Jobs get preempted; partial state needs to survive</li>
+          <li>The people running jobs are not always the people querying results</li>
+        </ul>
+        <p>These constraints pushed me toward a fundamentally different architecture than a typical RAG chatbot.</p>
+
+        <h2 id="core-design">The Core Design Decision: Build Once, Read Forever</h2>
+        <p>The central idea behind the CO2M pipeline is <strong>artifact materialization</strong>. Instead of a live pipeline that parses PDFs, classifies chunks, summarizes documents, and builds visualizations at query time, the system does that work once in a batch job and writes everything to Parquet files. The dashboard and any downstream consumers read only from those artifacts. The future RAG layer can consume these same artifacts to build embeddings and populate a vector database.</p>
+        <p>This sounds obvious when you say it out loud, but it has real consequences:</p>
+        <ul>
+          <li>The ingestion job can run on a compute node with no network access. It reads from the local filesystem and writes to the local filesystem. Nothing else.</li>
+          <li>The dashboard can run on a login node, a local machine, or anywhere else. It has no dependency on the cluster that built the artifacts. You <code>scp</code> the Parquet files and launch Streamlit. Done.</li>
+          <li>Job preemption is survivable. Because each pipeline stage writes its own artifact, a preempted job can resume from the last completed stage rather than starting over.</li>
+        </ul>
+        <p>The tradeoff is freshness. If you add new papers, you need to re-run the pipeline. For a research corpus that evolves slowly, that's an acceptable tradeoff.</p>
+        <p>The full flow looks like this:</p>
+        <figure class="figure">
+          <img src="images/co2m_pipeline_diagram.png" alt="CO2M Literature Intelligence Pipeline" />
+          <figcaption class="caption">Figure 1: CO2M Literature Intelligence Pipeline — Seven-stage workflow from PDF corpus to portable Parquet artifacts and Streamlit dashboard</figcaption>
+        </figure>
+
+        <h2 id="the-pipeline">Walking Through the 7-Stage Pipeline</h2>
+        <p>The pipeline runs sequentially through seven stages, each consuming the previous stage's output.</p>
+        
+        <h3>Stage 1: Taxonomy Loading</h3>
+        <p>Before touching a single PDF, the system parses <code>concepts.yaml</code>, a researcher-curated taxonomy of scientific concepts relevant to the corpus. This is the most important design decision in the whole system. Classification is grounded in domain vocabulary, not a generic topic model. If the taxonomy doesn't reflect how researchers actually talk about the field, everything downstream is noise.</p>
+
+        <h3>Stage 2: Metadata Enrichment</h3>
+        <p>Each document has a sidecar file (CSV, JSON, or XML) carrying structured metadata: authors, year, venue, DOI. These get attached to document records before any text processing happens, so every downstream artifact carries full provenance.</p>
+
+        <h3>Stage 3: PDF Discovery</h3>
+        <p>The pipeline scans the corpus directory, registers each document, and produces a manifest. This is the checkpoint. If a job is preempted after this stage, the system knows exactly which documents exist and can resume cleanly.</p>
+
+        <h3>Stage 4: Text Extraction and Chunking</h3>
+        <p>Pages are parsed and split into semantically coherent segments. Chunk boundaries respect sentence structure; we don't split mid-sentence to hit a token count. The current corpus produces 3,689 chunks from 47 documents.</p>
+
+        <h3>Stage 5: Concept Classification</h3>
+        <p>Each chunk is tagged against the taxonomy from Stage 1. This produced 2,104 concept assignments across the corpus, a coverage ratio of about 57%, meaning roughly half the chunks carry at least one explicit concept tag. That number is a tuning parameter; a stricter classifier reduces false positives but increases gaps.</p>
+
+        <h3>Stage 6: Extractive Summaries</h3>
+        <p>Per-document summaries are generated by ranking and condensing the highest-signal passages. No generative model is involved here. Summaries are built from the source text itself, which matters for reproducibility and auditability.</p>
+
+        <h3>Stage 7: Visualization Table Generation</h3>
+        <p>All outputs are written to a structured set of Parquet files: <code>documents.parquet</code>, <code>pages.parquet</code>, <code>chunks.parquet</code>, <code>concepts.parquet</code>, <code>summaries.parquet</code>, <code>keywords_by_concept.parquet</code>, <code>top_documents_by_concept.parquet</code>, <code>concept_summaries.parquet</code>, and <code>manifest.json</code>. The manifest records pipeline metadata (run timestamp, config hash, stage completion status) so you always know exactly what state an artifact set represents.</p>
+
+        <h2 id="the-dashboard">The Dashboard: What Researchers Actually See</h2>
+        <p>Once the artifacts exist, the Streamlit dashboard is straightforward. It reads Parquet, renders a few views, and stays out of the way.</p>
+        <p>The most useful view is the stacked area chart of research activity trends. It shows how publication volume has shifted across concepts over time, which immediately surfaces things like "electrochemical approaches started dominating after 2019" or "sorbent regeneration papers cluster in 2017-2019." That kind of temporal structure is invisible when you're reading papers one at a time.</p>
+        <p>The document ranking view lets a researcher pick a concept and see the top documents by relevance, with their extractive summary and source snippets. It's not a chat interface; it's closer to a structured search results page. That's intentional. Researchers on a deadline don't want to have a conversation with their literature. They want to find the three most relevant papers quickly.</p>
+        <figure class="figure">
+          <img src="images/co2m_dashboard_screenshot.png" alt="CO2M Dashboard - Measurement and Instrumentation Concept" />
+          <figcaption class="caption">Figure 2: CO2M Dashboard showing concept coverage analysis for "Measurement and instrumentation" — bar charts display chunk coverage and document relevance across the corpus</figcaption>
+        </figure>
+
+        <h2 id="running-on-hpc">What Running This on HPC Actually Looks Like</h2>
+        <p>The <code>hpc_tools/</code> module provides SLURM job templates for the ingestion pipeline. A typical submission looks like:</p>
+        <div class="code-block">cd hpc_tools/
+sbatch submit_ingestion.sh</div>
+        <p>The job runs on a compute node, processes the corpus, and writes artifacts to a shared filesystem path. Once it completes, a researcher on the login node runs:</p>
+        <div class="code-block">streamlit run co2m_lit_dashboard/app.py</div>
+        <p>and accesses the dashboard via SSH port forwarding. The compute job and the dashboard never need to be running at the same time.</p>
+
+        <h2 id="what-id-do-differently">What I'd Do Differently</h2>
+        <p>The biggest gap right now is evaluation. I know the pipeline produces artifacts and the dashboard renders them, but I don't have a systematic way to measure whether the retrieval is good. A 20-question expert-curated QA benchmark drawn from the corpus would answer that, and it's the first thing I'd add before calling this production-ready.</p>
+        <p>The concept classification coverage (57%) is also worth pushing higher. The current approach tags chunks that contain explicit taxonomy terms. A small semantic classifier trained on labeled examples from the corpus would catch paraphrases and domain synonyms that keyword matching misses.</p>
+        <p>Finally, containerization. The pipeline runs cleanly with <code>pip install -r requirements.txt</code>, but an Apptainer image would make deployment on arbitrary HPC clusters genuinely one-step.</p>
+
+        <h2 id="broader-point">The Broader Point</h2>
+        <p>Most of the interesting problems in HPC-adjacent ML engineering aren't about model architecture. They're about what happens when your assumptions about infrastructure don't hold: when there's no internet, when jobs get killed, when the person who built the system isn't the person who runs it. Designing for those constraints, materializing artifacts, separating compute from serving, grounding classification in domain vocabulary, produces systems that are less impressive in a demo and more useful in practice.</p>
+        <p>Materials Copilot is still early. CO2M is the first component of a larger system that will eventually cover the full materials science research workflow: RAG retrieval, conversational querying, agent-assisted synthesis. The infrastructure decisions made here, offline-first, artifact-materialized, taxonomy-grounded, are the foundation everything else will build on.</p>
+        
+        <div class="callout">The code is at <a href="https://github.com/Jayapreethi/materials-copilot" target="_blank" style="color:var(--grn)">github.com/Jayapreethi/materials-copilot</a></div>
+
+        <p class="author-note">Jaya Preethi Mohan is a Doctoral Researcher in Computer Science at the University of North Dakota and a former Computer Scientist on the Advanced Computing Team at Pacific Northwest National Laboratory. · <a href="https://github.com/Jayapreethi/materials-copilot" target="_blank">View the Materials Copilot GitHub repository</a> · <a href="blog.html">Back to blog index</a></p>
+      </article>
+      <aside class="sidebar">
+        <div class="sidebar-title">On this page</div>
+        <a href="#the-problem">The Problem</a>
+        <a href="#core-design">Core Design</a>
+        <a href="#the-pipeline">7-Stage Pipeline</a>
+        <a href="#the-dashboard">The Dashboard</a>
+        <a href="#running-on-hpc">Running on HPC</a>
+        <a href="#what-id-do-differently">Improvements</a>
+        <a href="#broader-point">The Bigger Picture</a>
+      </aside>
+    </div>
+  </div>
+</main>
+<footer>
+  <div class="container">
+    <p class="foot-txt">© 2026 <em>Jaya Preethi Mohan</em> · AI / ML · HPC · Scientific Computing</p>
+  </div>
+</footer>
+<script>
+const ham = document.getElementById('ham');
+const nl  = document.getElementById('navLinks');
+if (ham && nl) {
+  ham.addEventListener('click', () => { ham.classList.toggle('open'); nl.classList.toggle('open'); });
+  nl.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+    ham.classList.remove('open'); nl.classList.remove('open');
+  }));
+}
+</script>
+</body>
+</html>
