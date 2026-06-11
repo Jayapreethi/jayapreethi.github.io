@@ -35,7 +35,7 @@ nav .inner{max-width:1100px;margin:0 auto;padding:0 2rem;height:100%;display:fle
 /* HERO */
 .hero{min-height:100vh;padding-top:var(--nav-h);display:grid;grid-template-columns:0.68fr 1.32fr;position:relative;overflow:hidden;background:var(--surface-1)}
 .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 55% 70% at 0% 0%,rgba(28,95,67,0.10) 0%,rgba(28,95,67,0.05) 28%,rgba(28,95,67,0.02) 50%,transparent 70%);pointer-events:none;z-index:0}
-.hero-text{display:flex;flex-direction:column;justify-content:center;padding:3rem 3.5rem 3rem 0;position:relative;z-index:1;background:linear-gradient(160deg,rgba(28,95,67,0.04) 0%,rgba(28,95,67,0.015) 45%,transparent 75%)}
+.hero-text{display:flex;flex-direction:column;justify-content:center;padding:3rem 3.5rem 3rem 2rem;position:relative;z-index:1;background:linear-gradient(160deg,rgba(28,95,67,0.04) 0%,rgba(28,95,67,0.015) 45%,transparent 75%)}
 .hero-text::before{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(to right,rgba(28,95,67,0.12) 0%,rgba(28,95,67,0.04) 50%,transparent 80%);pointer-events:none;z-index:0}
 .hero-eyebrow{font-family:var(--mono);font-size:0.62rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--grn);margin-bottom:0.7rem;opacity:0;animation:rise .7s ease .08s forwards}
 .hero-name{font-family:var(--serif);font-size:clamp(2.2rem,3.2vw,3.2rem);font-weight:400;line-height:1.06;color:var(--ink-0);margin-bottom:0.25rem;opacity:0;animation:rise .7s ease .2s forwards}
@@ -462,7 +462,7 @@ footer{background:var(--surface-1);border-top:1px solid var(--stroke);padding:1.
     </div>
   </div></div>
 </section>
-<footer><div class="container"><p class="foot-txt">© 2026 <em>Jaya Preethi Mohan</em> &middot; Built with precision</p></div></footer>
+<footer><div class="container"><p class="foot-txt">© 2026 <em>Jaya Preethi Mohan</em></p></div></footer>
 <script>
 const ham=document.getElementById('ham'),nl=document.getElementById('navLinks');
 ham.addEventListener('click',()=>{ham.classList.toggle('open');nl.classList.toggle('open')});
