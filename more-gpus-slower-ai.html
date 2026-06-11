@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>More GPUs, Slower AI: Why Scaling Hardware Can Break Your Training · Jaya Preethi Mohan</title>
+<meta name="description" content="Exploring how adding more GPUs can actually slow down AI training due to communication overhead, floating-point precision changes, and synchronization costs." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+:root{--surface-0:#F4F6F9;--surface-1:#FFFFFF;--surface-2:#EEF1F6;--stroke:#DDE2EC;--stroke-md:#C8CFE0;--grn:#1C5F43;--grn-mid:#237A54;--grn-light:#E8F4EF;--grn-xl:#F2FAF6;--gld:#8B6914;--gld-light:#FBF5E6;--ink-0:#111827;--ink-1:#374151;--ink-2:#6B7280;--ink-3:#9CA3AF;--serif:'DM Serif Display',Georgia,serif;--sans:'Inter',system-ui,sans-serif;--mono:'JetBrains Mono','Courier New',monospace;--nav-h:64px}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:var(--sans);background:var(--surface-0);color:var(--ink-1);line-height:1.7;font-weight:400;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+::selection{background:var(--grn-light);color:var(--grn)}
+.container{max-width:1100px;margin:0 auto;padding:0 2rem}
+a{color:var(--grn);text-decoration:none;transition:color .2s}
+a:hover{color:var(--gld)}
+.icon{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+.icon svg{width:100%;height:100%;fill:currentColor}
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);background:rgba(255,255,255,0.92);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--stroke)}
+nav .inner{max-width:1100px;margin:0 auto;padding:0 2rem;height:100%;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{font-family:var(--sans);font-size:0.82rem;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;color:var(--ink-0)}
+.nav-logo em{font-style:normal;color:var(--grn)}
+.nav-links{display:flex;gap:2rem;list-style:none}
+.nav-links a{font-size:0.72rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-2);position:relative;transition:color .2s}
+.nav-links a::after{content:'';position:absolute;bottom:-6px;left:0;width:0;height:1.5px;background:var(--grn);transition:width .3s ease}
+.nav-links a:hover{color:var(--grn)}
+.nav-links a:hover::after{width:100%}
+.hamburger{display:none;background:none;border:none;cursor:pointer;width:24px;height:16px;position:relative}
+.hamburger span{display:block;width:100%;height:1.5px;background:var(--ink-0);position:absolute;left:0;transition:all .3s}
+.hamburger span:nth-child(1){top:0}.hamburger span:nth-child(2){top:7px}.hamburger span:nth-child(3){top:14px}
+.hamburger.open span:nth-child(1){top:7px;transform:rotate(45deg)}
+.hamburger.open span:nth-child(2){opacity:0}
+.hamburger.open span:nth-child(3){top:7px;transform:rotate(-45deg)}
+.blog-hero{min-height:60vh;padding-top:var(--nav-h);display:flex;align-items:center;background:linear-gradient(135deg,rgba(28,95,67,0.06) 0%,rgba(28,95,67,0.02) 50%,transparent 100%);border-bottom:1px solid var(--stroke);position:relative}
+.hero-back{position:absolute;top:var(--nav-h);left:0;right:0;padding:1.5rem 2rem}
+.hero-back a{display:inline-flex;align-items:center;gap:0.4rem;font-size:0.75rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-2)}
+.hero-back a:hover{color:var(--grn)}
+.blog-hero-content{margin-top:3rem;padding:0 2rem}
+.blog-hero h1{font-family:var(--serif);font-size:clamp(2rem,4vw,3.2rem);font-weight:400;line-height:1.15;color:var(--ink-0);margin-bottom:1rem}
+.blog-hero-meta{display:flex;align-items:center;gap:1.2rem;flex-wrap:wrap;font-size:0.85rem;color:var(--ink-2)}
+.blog-hero-meta span{display:flex;align-items:center;gap:0.4rem}
+.blog-hero-excerpt{font-family:var(--mono);font-size:0.95rem;color:var(--grn);margin-top:1.5rem;line-height:1.7;max-width:700px}
+.blog-content{display:grid;grid-template-columns:1fr 280px;gap:3rem;padding:3.5rem 0;position:relative}
+.article{grid-column:1}
+.article h2{font-family:var(--serif);font-size:1.6rem;color:var(--ink-0);margin:2.5rem 0 1.2rem;line-height:1.25;font-weight:400}
+.article h3{font-family:var(--serif);font-size:1.2rem;color:var(--ink-0);margin:1.8rem 0 0.8rem;font-weight:400}
+.article p{font-size:1rem;color:var(--ink-1);line-height:1.85;margin-bottom:1.2rem;text-align:justify}
+.article ul,.article ol{margin:1.2rem 0 1.2rem 2rem;line-height:1.9}
+.article li{margin-bottom:0.6rem;color:var(--ink-1);font-size:1rem}
+.article em{font-style:italic;color:var(--ink-0)}
+.article strong{font-weight:600;color:var(--ink-0)}
+.article table{width:100%;border-collapse:collapse;margin:1.5rem 0;background:var(--surface-1);border:1px solid var(--stroke)}
+.article th{background:var(--grn-light);color:var(--grn);padding:0.8rem;text-align:left;font-weight:600;font-size:0.9rem}
+.article td{padding:0.8rem;border-bottom:1px solid var(--stroke);font-size:0.95rem;color:var(--ink-1)}
+.article tr:last-child td{border-bottom:none}
+.article figure{margin:2.5rem 0;padding:0;position:relative}
+.article figcaption{font-family:var(--mono);font-size:0.8rem;color:var(--ink-3);margin-top:0.6rem;line-height:1.6;text-align:center}
+.article img{width:100%;height:auto;display:block;border:1px solid var(--stroke);border-radius:4px}
+.callout{background:var(--grn-xl);border-left:3px solid var(--grn);padding:1.4rem;margin:2rem 0;border-radius:2px}
+.callout p{margin:0;font-size:0.95rem;color:var(--ink-1)}
+.callout strong{color:var(--grn)}
+.blog-sidebar{grid-column:2;position:sticky;top:var(--nav-h);height:max-content;padding-top:1rem}
+.sidebar-nav{background:var(--surface-1);border:1px solid var(--stroke);border-radius:4px;overflow:hidden}
+.sidebar-nav-title{font-family:var(--mono);font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--grn);padding:1rem;border-bottom:1px solid var(--stroke);font-weight:600}
+.sidebar-nav ul{list-style:none;padding:0}
+.sidebar-nav li{border-bottom:1px solid var(--stroke)}
+.sidebar-nav li:last-child{border-bottom:none}
+.sidebar-nav a{display:block;padding:0.8rem 1rem;font-size:0.85rem;color:var(--ink-2);transition:all .2s;text-decoration:none}
+.sidebar-nav a:hover{background:var(--surface-0);color:var(--grn);padding-left:1.3rem}
+.blog-footer{padding:3rem 0;border-top:1px solid var(--stroke);margin-top:3rem}
+.blog-footer-author{background:var(--surface-2);padding:1.8rem;border-radius:4px;margin-bottom:2rem}
+.blog-footer-author p{font-size:0.95rem;color:var(--ink-1);line-height:1.8;margin-bottom:0.5rem}
+.blog-footer-author em{font-style:italic;color:var(--ink-0)}
+.blog-nav{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:2rem}
+.blog-nav-item{display:flex;flex-direction:column;padding:1.2rem;border:1px solid var(--stroke);text-decoration:none;transition:all .2s}
+.blog-nav-item:hover{border-color:var(--grn);background:var(--grn-xl)}
+.blog-nav-label{font-family:var(--mono);font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-3);margin-bottom:0.4rem}
+.blog-nav-title{font-family:var(--serif);font-size:1rem;color:var(--ink-0);line-height:1.3}
+footer{border-top:1px solid var(--stroke);padding:2.5rem 0;margin-top:4rem;text-align:center}
+.foot-txt{font-family:var(--mono);font-size:0.6rem;letter-spacing:0.04em;color:var(--ink-3)}
+@keyframes rise{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+@media(max-width:960px){
+  .blog-content{grid-template-columns:1fr;gap:2rem;padding:2.5rem 0}
+  .blog-sidebar{grid-column:1;position:static}
+  .blog-hero h1{font-size:clamp(1.6rem,3vw,2.4rem)}
+  .article h2{font-size:1.3rem;margin:2rem 0 1rem}
+  .article table{font-size:0.85rem}
+  .article th,.article td{padding:0.6rem}
+}
+@media(max-width:640px){
+  .nav-links{display:none;flex-direction:column;gap:1.5rem;position:fixed;top:var(--nav-h);left:0;right:0;bottom:0;background:var(--surface-1);padding:2rem;border-top:1px solid var(--stroke);z-index:190}
+  .nav-links.open{display:flex}
+  .hamburger{display:block}
+  .container{padding:0 1.2rem}
+  .blog-hero{min-height:auto;padding-top:calc(var(--nav-h) + 1rem)}
+  .blog-hero-content{margin-top:0;padding:0}
+  .blog-hero h1{font-size:clamp(1.4rem,2.5vw,2rem);margin-bottom:0.8rem}
+  .blog-hero-meta{font-size:0.8rem;gap:0.8rem}
+  .blog-hero-excerpt{font-size:0.9rem;margin-top:1rem}
+  .article h2{font-size:1.2rem;margin:1.8rem 0 0.9rem}
+  .article h3{font-size:1rem;margin:1.5rem 0 0.7rem}
+  .article p{font-size:0.95rem;line-height:1.8}
+  .article ul,.article ol{margin:1rem 0 1rem 1.5rem;font-size:0.95rem}
+  .article table{font-size:0.8rem;margin:1.2rem 0}
+  .article th,.article td{padding:0.5rem 0.4rem}
+  .article figure{margin:1.8rem 0}
+  .article figcaption{font-size:0.75rem}
+  .blog-nav{grid-template-columns:1fr;gap:1rem;margin-top:1.5rem}
+  .blog-footer-author{padding:1.2rem}
+}
+@media(max-width:360px){
+  .blog-hero h1{font-size:1.4rem}
+  .article{font-size:0.9rem}
+  .article h2{font-size:1.1rem;margin:1.5rem 0 0.7rem}
+  .article p{font-size:0.9rem;margin-bottom:1rem}
+  .article ul,.article ol{margin:0.8rem 0 0.8rem 1.2rem;font-size:0.9rem}
+}
+</style>
+</head>
+<body>
+<nav>
+  <div class="inner">
+    <a href="/" class="nav-logo"><em>Jaya</em> Preethi.Mohan</a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="/#about">About</a></li>
+      <li><a href="/#research">Research</a></li>
+      <li><a href="/#experience">Experience</a></li>
+      <li><a href="/#expertise">Expertise</a></li>
+      <li><a href="/#awards">Awards</a></li>
+      <li><a href="/#publications">Publications</a></li>
+      <li><a href="/blog.html">Writing</a></li>
+      <li><a href="/#contact">Contact</a></li>
+    </ul>
+    <button class="hamburger" id="ham"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<section class="blog-hero">
+  <div class="hero-back">
+    <a href="/blog.html">← Back to Writing</a>
+  </div>
+  <div class="container blog-hero-content">
+    <h1>More GPUs, Slower AI: Why Scaling Hardware Can Break Your Training</h1>
+    <div class="blog-hero-meta">
+      <span>HPC & Systems</span>
+      <span>June 2026</span>
+      <span>10 min read</span>
+    </div>
+    <p class="blog-hero-excerpt"><em>The assumption that adding GPUs accelerates training is so deeply embedded in how we talk about AI infrastructure that most teams never test it. Here is what happens when you do.</em></p>
+  </div>
+</section>
+
+<div class="container">
+  <div class="blog-content">
+    <article class="article">
+      <h2 id="intuition">The intuition that breaks first</h2>
+      <p>When a training job runs slowly, the instinct is to request more resources. More GPUs means more parallel compute. More parallel compute means faster iteration. That logic is true often enough that it has become default reasoning for most ML teams on shared clusters.</p>
+      <p>It does not always hold. And it fails in ways that are not obvious until you are already deep into a training run.</p>
+      <p>The relationship between GPU count and training speed has three distinct regimes. In the first, adding GPUs genuinely accelerates training: throughput increases, wall-clock time falls, and cost-per-epoch drops. In the second, returns diminish: you are adding hardware but spending a growing fraction of each step waiting for coordination, not doing computation. In the third, adding GPUs actively degrades training: convergence slows, results become less consistent, and in some configurations the model fails to converge at all.</p>
+      <p>Most teams live in regime one for most workloads. Regimes two and three are real, well-documented, and far more common than benchmarks suggest, because benchmarks are designed by people who know how to avoid them.</p>
+      <p>This article explains why regimes two and three exist, what causes them, and what to do about it.</p>
+
+      <figure>
+        <img src="./images/gpu_infograph.png" alt="Why More GPUs Can Slow Down AI - Infographic showing 5 stages: GPU workload distribution, uneven completion, barrier synchronization, network coordination overhead, and training slowdown" />
+        <figcaption>The five mechanisms that cause scaling inefficiency in distributed GPU training.</figcaption>
+      </figure>
+
+      <h2 id="amdahl">Start with Amdahl's law, then go further</h2>
+      <p>The classic framework for parallel scaling is Amdahl's law. It says the maximum speedup from parallelization is limited by the fraction of work that cannot be parallelized. If 10% of your training step is inherently serial, no amount of GPU scaling will exceed a 10x speedup, no matter how many devices you add.</p>
+      <p>But there is a part of the story Amdahl's law does not capture: the serial fraction grows as you add more GPUs.</p>
+      <p>In distributed training, after every backward pass, all GPUs must agree on the gradient update before taking the next step. This coordination step, called an all-reduce, requires every GPU to send its gradients to every other GPU and combine them. The more GPUs you have, the more data needs to move, and the longer this coordination takes.</p>
+      <p>Consider a concrete example. A model with 100 million parameters sends 400 MB of gradient data per all-reduce step. On two GPUs connected over NVLink (the fast GPU-to-GPU interconnect inside a single server), that exchange takes about 1 to 2 milliseconds. On 256 GPUs spread across multiple nodes connected by InfiniBand, the same exchange can take 50 to 100 milliseconds, depending on network load, switch configuration, and what other jobs are running on the same cluster.</p>
+      <p>If your actual compute step takes 200 ms and all-reduce adds 50 ms, you are spending 25% of every training iteration just waiting for GPUs to talk to each other. That overhead applies to every step, across every epoch, for the entire run. It does not show up in single-GPU benchmarks. It is invisible until you scale.</p>
+      <p>You paid for 256 GPUs. You got the effective throughput of maybe 80, once communication cost is properly accounted.</p>
+
+      <h2 id="math">The math problem hiding inside every gradient update</h2>
+      <p>Beyond communication time, there is a subtler issue: the result of a distributed training step depends mathematically on how many GPUs participated.</p>
+      <p>This sounds strange. The same model, the same data, the same loss function — how can the answer depend on GPU count?</p>
+      <p>It comes down to a property of floating-point arithmetic. On a computer, addition is not perfectly associative. That means <code>(a + b) + c</code> does not always equal <code>a + (b + c)</code> when numbers are represented in finite precision. The difference is usually tiny, but it is nonzero.</p>
+      <p>A gradient reduction across multiple GPUs is, at its core, a very large sum: all the gradient values from all the parameters, combined across all the devices. With 2 GPUs, the sum happens in one order. With 8 GPUs, the ring topology changes and the sum happens in a different order. With 64 GPUs, a tree reduction algorithm picks yet another order.</p>
+      <p>Each ordering produces a slightly different result. On its own, any one difference is negligible. But gradient descent runs for tens of thousands of steps. Small numerical differences in each gradient update accumulate over time. The path the optimizer takes through the loss landscape shifts. The solution the model converges to can change, sometimes in ways that matter for scientific validity, not just benchmark scores.</p>
+      <p>This is not a bug in any particular library. It is a consequence of how floating-point arithmetic works, and it is not something you can fix by setting a random seed.</p>
+
+      <h2 id="gpu-generations">What happens when you change GPU generations</h2>
+      <p>The problem compounds when the hardware itself changes, which often happens naturally as teams scale from development clusters to production allocations.</p>
+      <p>Different GPU generations handle floating-point arithmetic differently by default. Newer architectures frequently introduce precision modes that trade numerical fidelity for higher throughput. A training script that ran at full 32-bit precision on one generation may silently run at a reduced precision mode on the next, without any code change and without any warning in the logs.</p>
+
+      <table>
+        <tr><th>Scaling scenario</th><th>What changes</th><th>Visible in logs?</th></tr>
+        <tr><td>2 GPUs to 8 GPUs, same hardware</td><td>Reduction order, ring topology</td><td>No</td></tr>
+        <tr><td>Same GPU count, newer hardware generation</td><td>Default precision mode, cuDNN algorithm selection</td><td>No</td></tr>
+        <tr><td>Both: more GPUs and newer hardware</td><td>Precision, reduction order, network topology, NCCL algorithm</td><td>No</td></tr>
+        <tr><td>Different cluster, same job script</td><td>Network bandwidth, contention, node placement</td><td>No</td></tr>
+      </table>
+
+      <p>None of these changes require a code modification. All of them can alter numerical behavior. When a team moves from a small development allocation to a large production run and observes different training dynamics, the instinct is to look for a bug. There is usually no bug. Several numerical properties changed simultaneously, each small in isolation and collectively significant.</p>
+      <p>Scaling up GPU count and changing hardware generation at the same time is particularly risky because the effects interact. The gradient reduction order changes with GPU count. The precision mode changes with the hardware generation. The NCCL communication algorithm changes with both. A training run that was validated on a smaller, older allocation is not guaranteed to reproduce on a larger, newer one, even with the same code, the same data, and the same random seeds.</p>
+
+      <h2 id="barrier">The slowest GPU sets the pace for everyone</h2>
+      <p>There is a third mechanism that is rarely discussed in introductory distributed training resources: barrier synchronization.</p>
+      <p>In standard synchronous training, all GPUs must finish their backward pass before the gradient reduction can begin. This is enforced by a synchronization barrier: every GPU waits until every other GPU has arrived.</p>
+      <p>On a perfectly homogeneous cluster with identical hardware, identical temperatures, and no competing jobs, every GPU arrives at the barrier at roughly the same time. The wait is negligible.</p>
+      <p>On a real HPC cluster, that assumption does not hold. Different nodes experience different memory pressure from co-located jobs. Different GPUs in the same chassis run at different temperatures depending on their position in the airflow. Different network paths between nodes have different latencies depending on what else is running on the same switch fabric.</p>
+      <p>The speed of the entire distributed job is bounded by the slowest GPU in every step. If 63 GPUs finish their backward pass in 180 ms and one GPU takes 240 ms because it is thermally throttled, all 63 faster GPUs wait 60 ms at the barrier. Every step. Across 100,000 training steps, that adds up to roughly 100 hours of wasted compute time, invisible in any single-step measurement but cumulatively devastating.</p>
+      <p>This effect gets worse as GPU count grows. The probability that at least one GPU is slow in any given step increases with job size. With 2 GPUs the chance is low. With 256 GPUs, across a long run, it is nearly certain. The more GPUs you add, the more time every other GPU spends waiting at barriers.</p>
+      <p>This is why straggler mitigation strategies, asynchronous gradient updates, and load-aware job placement tools exist. They are not theoretical features. They are responses to a real and measured problem in production distributed training on shared clusters.</p>
+
+      <h2 id="scientific">Why scientific workloads are hit harder</h2>
+      <p>Everything above applies to standard deep learning. For scientific ML, meaning models trained against physical laws, simulations, or domain-specific ground truth, the consequences are more serious because the failure mode changes.</p>
+      <p>A standard image classification model that converges differently due to floating-point reduction order produces a model that classifies images slightly less accurately. The failure is visible and measurable.</p>
+      <p>A physics-informed neural network that converges to a solution violating the governing equations produces numbers that look like predictions. Those numbers pass loss thresholds. They appear in output files. They may even look reasonable on casual inspection. But they do not satisfy the physical constraints the model was supposed to enforce. The failure is invisible unless you run domain-specific validation.</p>
+      <p>In scientific contexts, adding more GPUs can change what the model learns in ways that matter scientifically, not just what score it gets on a benchmark. That is a qualitatively different kind of risk than slower convergence.</p>
+
+      <h2 id="questions">Three questions before you scale</h2>
+      <p>The right question before requesting a large GPU allocation is not "how many GPUs do I need?" It is "does my workload actually benefit from more GPUs?"</p>
+      <p>Three properties determine the answer.</p>
+      <p><strong>Is the workload compute-bound or communication-bound?</strong> If your model spends most of its time doing matrix multiplications, adding GPUs helps because you can split that work. If your model has many small operations requiring frequent inter-GPU communication, as graph neural networks often do, adding GPUs may add more communication overhead than compute throughput.</p>
+      <p><strong>Is the training numerically stable under different GPU counts?</strong> This is not something you can determine by inspection. It requires running the same configuration at different scales and comparing results, not just accuracy metrics, but whatever scientific validity metric actually matters for your application.</p>
+      <p><strong>Does your cluster have the network bandwidth to support the communication volume you are generating?</strong> On a shared HPC cluster, this is not guaranteed. A job that ran well on a lightly loaded cluster may run significantly worse on a busy one. The job specification did not change. The effective network bandwidth did.</p>
+
+      <h2 id="protocol">A simple protocol worth running before every large job</h2>
+      <p>The most useful practice before committing to a large distributed training run is a scaling efficiency measurement. The protocol takes a few hours and can save days or weeks of wasted allocation.</p>
+      <p>Train for a fixed number of steps, a few hundred is usually enough, at 1, 2, 4, and 8 GPUs. Measure wall-clock time per step, not total throughput. Plot the actual speedup ratio against the theoretical ideal. Find where the curve starts bending away from linear.</p>
+      <p>If your speedup at 4 GPUs is 2.5x instead of 4x, you are already in regime two. Extrapolating to 32 or 64 GPUs based on that trajectory will land you firmly in regime three.</p>
+      <p>For scientific workloads, add one more check: compare your domain validation metric at each scale point. If physics residuals, conservation law errors, or application-specific accuracy degrade as GPU count increases, you have found the numerical stability ceiling for your workload. Running beyond it produces results that are fast to compute and wrong to use.</p>
+      <p>The compute cost of this protocol is small. The information it gives you is the most important input to a scaling decision. It is almost never done in practice.</p>
+
+      <h2 id="takeaway">The practical takeaway</h2>
+      <p>GPU count is not a proxy for training quality. It is an infrastructure parameter with complex effects on communication overhead, floating-point behavior, synchronization cost, and for scientific workloads, result validity.</p>
+      <p>The teams doing the best work on HPC clusters are not the ones running the largest jobs. They are the ones who know their workload's scaling behavior, have identified the scale ceiling, and design their experiments to stay inside it.</p>
+      <p>Adding GPUs is a one-line change to a job script. Understanding what that change actually does to your training is the engineering work.</p>
+
+      <h2>References</h2>
+      <ol>
+        <li>Amdahl, G. M. (1967). Validity of the single processor approach to achieving large scale computing capabilities. <em>Proceedings of AFIPS Spring Joint Computer Conference</em>, 483–485.</li>
+        <li>Recht, B., Re, C., Wright, S., & Niu, F. (2011). Hogwild!: A lock-free approach to parallelizing stochastic gradient descent. <em>NeurIPS</em>, 24.</li>
+        <li>Sergeev, A., & Del Balso, M. (2018). Horovod: Fast and easy distributed deep learning in TensorFlow. <em>arXiv:1802.05795</em>. Available: arxiv.org/abs/1802.05795</li>
+        <li>Bouthillier, X., et al. (2021). Accounting for variance in machine learning benchmarks. <em>MLSys</em>, 3. Available: arxiv.org/abs/2103.03673</li>
+        <li>NVIDIA Corporation. (2023). cuDNN Developer Guide. Documents runtime algorithm selection behavior and determinism opt-in requirements. Available: docs.nvidia.com/deeplearning/cudnn/developer-guide/</li>
+        <li>PyTorch Team. (2024). Reproducibility. PyTorch Documentation. Available: pytorch.org/docs/stable/notes/randomness.html</li>
+      </ol>
+
+      <div class="blog-footer">
+        <div class="blog-footer-author">
+          <p><em>Jaya Preethi Mohan</em> is a Doctoral Researcher in Computer Science at the University of North Dakota and a former Computer Scientist on the Advanced Computing Team at Pacific Northwest National Laboratory.</p>
+        </div>
+        <div class="blog-nav">
+          <a href="/blog.html" class="blog-nav-item">
+            <span class="blog-nav-label">← Previous</span>
+            <span class="blog-nav-title">Back to All Articles</span>
+          </a>
+        </div>
+      </div>
+    </article>
+
+    <aside class="blog-sidebar">
+      <nav class="sidebar-nav">
+        <div class="sidebar-nav-title">Jump to Section</div>
+        <ul>
+          <li><a href="#intuition">The Intuition That Breaks First</a></li>
+          <li><a href="#amdahl">Amdahl's Law</a></li>
+          <li><a href="#math">The Math Problem</a></li>
+          <li><a href="#gpu-generations">GPU Generations</a></li>
+          <li><a href="#barrier">Barrier Synchronization</a></li>
+          <li><a href="#scientific">Scientific Workloads</a></li>
+          <li><a href="#questions">Three Questions</a></li>
+          <li><a href="#protocol">Scaling Efficiency</a></li>
+          <li><a href="#takeaway">Key Takeaway</a></li>
+        </ul>
+      </nav>
+    </aside>
+  </div>
+</div>
+
+<footer><div class="container"><p class="foot-txt">© 2026 <em>Jaya Preethi Mohan</em></p></div></footer>
+
+<script>
+const ham=document.getElementById('ham'),nl=document.getElementById('navLinks');
+ham.addEventListener('click',()=>{ham.classList.toggle('open');nl.classList.toggle('open')});
+nl.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{ham.classList.remove('open');nl.classList.remove('open')}));
+document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click',e=>{const t=document.querySelector(a.getAttribute('href'));if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth',block:'start'})}})});
+</script>
+</body>
+</html>

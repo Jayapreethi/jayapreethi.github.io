@@ -158,10 +158,10 @@ footer{background:var(--surface-1);border-top:1px solid var(--stroke);padding:1.
 
 <div class="filter-bar">
   <div class="filter-inner">
-    <button class="filter-btn active" data-filter="all">All Posts <span class="filter-count" id="count-all">6</span></button>
+    <button class="filter-btn active" data-filter="all">All Posts <span class="filter-count" id="count-all">7</span></button>
     <button class="filter-btn" data-filter="infrastructure">Research Infrastructure <span class="filter-count" id="count-infrastructure">2</span></button>
-    <button class="filter-btn" data-filter="hpc">HPC &amp; Systems <span class="filter-count" id="count-hpc">3</span></button>
-    <button class="filter-btn" data-filter="ml">Scientific ML <span class="filter-count" id="count-ml">2</span></button>
+    <button class="filter-btn" data-filter="hpc">HPC &amp; Systems <span class="filter-count" id="count-hpc">4</span></button>
+    <button class="filter-btn" data-filter="ml">Scientific ML <span class="filter-count" id="count-ml">3</span></button>
     <button class="filter-btn" data-filter="energy">Energy Systems <span class="filter-count" id="count-energy">1</span></button>
   </div>
 </div>
@@ -220,7 +220,30 @@ footer{background:var(--surface-1);border-top:1px solid var(--stroke);padding:1.
       </div>
     </a>
 
-    <a href="containerized-llm-blog.html" class="blog-card reveal d2" data-category="infrastructure ml energy">
+    <a href="more-gpus-slower-ai.html" class="blog-card reveal d2" data-category="hpc ml">
+      <img src="images/gpu_infograph.png" alt="More GPUs Slower AI Infographic" class="blog-card-img" />
+      <div class="blog-card-body">
+        <div class="blog-card-venue">HPC &amp; Systems &nbsp;&middot;&nbsp; Distributed Training</div>
+        <div class="blog-card-title">More GPUs, Slower AI: Why Scaling Hardware Can Break Your Training</div>
+        <div class="blog-card-excerpt">Why adding GPUs often fails to accelerate training. Explores communication overhead, floating-point precision changes, barrier synchronization, and practical scaling efficiency tests that most teams never run.</div>
+        <div class="tag-row">
+          <span class="tag">Distributed Training</span>
+          <span class="tag">GPU Scaling</span>
+          <span class="tag">HPC Clusters</span>
+          <span class="tag">Scientific ML</span>
+          <span class="tag">Amdahl's Law</span>
+        </div>
+        <div class="blog-card-footer">
+          <span class="blog-card-meta">2026 &nbsp;&middot;&nbsp; 10 min read</span>
+          <span class="blog-card-read">
+            Read post
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </span>
+        </div>
+      </div>
+    </a>
+
+    <a href="containerized-llm-blog.html" class="blog-card reveal d3" data-category="infrastructure ml energy">
       <img src="images/arch.png" alt="DER LLM Titlecard" class="blog-card-img" />
       <div class="blog-card-body">
         <div class="blog-card-venue">LLM Deployment &nbsp;&middot;&nbsp; Energy Systems</div>
@@ -242,7 +265,7 @@ footer{background:var(--surface-1);border-top:1px solid var(--stroke);padding:1.
       </div>
     </a>
 
-    <a href="ai-reproducibility-blog.html" class="blog-card reveal d3" data-category="ml hpc">
+    <a href="ai-reproducibility-blog.html" class="blog-card reveal d4" data-category="ml hpc">
       <img src="images/ai_reprod_titlecard.png" alt="AI Reproducibility Titlecard" class="blog-card-img" />
       <div class="blog-card-body">
         <div class="blog-card-venue">Scientific ML &nbsp;&middot;&nbsp; HPC &amp; Systems</div>
@@ -266,7 +289,7 @@ footer{background:var(--surface-1);border-top:1px solid var(--stroke);padding:1.
 
 
 
-    <a href="assumption-mismatch-blog.html" class="blog-card reveal d4" data-category="ml hpc">
+    <a href="assumption-mismatch-blog.html" class="blog-card reveal d6" data-category="ml hpc">
       <img src="images/algo_mismatch.png" alt="Assumption Mismatch Titlecard" class="blog-card-img" />
       <div class="blog-card-body">
         <div class="blog-card-venue">Scientific ML &nbsp;&middot;&nbsp; HPC &amp; Systems</div>
@@ -288,7 +311,7 @@ footer{background:var(--surface-1);border-top:1px solid var(--stroke);padding:1.
       </div>
     </a>
 
-    <a href="quantum-serverless-blog.html" class="blog-card reveal d5" data-category="quantum cloud ml">
+    <a href="quantum-serverless-blog.html" class="blog-card reveal d6" data-category="quantum cloud ml">
       <img src="images/quantum-blog-title-card.png" alt="Quantum Serverless Titlecard" class="blog-card-img" />
       <div class="blog-card-body">
         <div class="blog-card-venue">Quantum Computing &nbsp;&middot;&nbsp; Cloud</div>
