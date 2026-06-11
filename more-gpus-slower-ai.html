@@ -33,15 +33,12 @@ nav .inner{max-width:1100px;margin:0 auto;padding:0 2rem;height:100%;display:fle
 .hamburger.open span:nth-child(2){opacity:0}
 .hamburger.open span:nth-child(3){top:7px;transform:rotate(-45deg)}
 .blog-hero{min-height:60vh;padding-top:var(--nav-h);display:flex;align-items:center;background:linear-gradient(135deg,rgba(28,95,67,0.06) 0%,rgba(28,95,67,0.02) 50%,transparent 100%);border-bottom:1px solid var(--stroke);position:relative}
-.hero-back{position:absolute;top:var(--nav-h);left:0;right:0;padding:1.5rem 2rem}
-.hero-back a{display:inline-flex;align-items:center;gap:0.4rem;font-size:0.75rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-2)}
-.hero-back a:hover{color:var(--grn)}
 .blog-hero-content{margin-top:3rem;padding:0 2rem}
 .blog-hero h1{font-family:var(--serif);font-size:clamp(2rem,4vw,3.2rem);font-weight:400;line-height:1.15;color:var(--ink-0);margin-bottom:1rem}
 .blog-hero-meta{display:flex;align-items:center;gap:1.2rem;flex-wrap:wrap;font-size:0.85rem;color:var(--ink-2)}
 .blog-hero-meta span{display:flex;align-items:center;gap:0.4rem}
 .blog-hero-excerpt{font-family:var(--mono);font-size:0.95rem;color:var(--grn);margin-top:1.5rem;line-height:1.7;max-width:700px}
-.blog-content{display:grid;grid-template-columns:1fr 280px;gap:3rem;padding:3.5rem 0;position:relative}
+.blog-content{display:grid;grid-template-columns:1fr 280px;gap:3rem;padding:3.5rem 0;position:relative;width:100%}
 .article{grid-column:1}
 .article h2{font-family:var(--serif);font-size:1.6rem;color:var(--ink-0);margin:2.5rem 0 1.2rem;line-height:1.25;font-weight:400}
 .article h3{font-family:var(--serif);font-size:1.2rem;color:var(--ink-0);margin:1.8rem 0 0.8rem;font-weight:400}
@@ -82,7 +79,8 @@ footer{border-top:1px solid var(--stroke);padding:2.5rem 0;margin-top:4rem;text-
 @keyframes rise{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
 @media(max-width:960px){
   .blog-content{grid-template-columns:1fr;gap:2rem;padding:2.5rem 0}
-  .blog-sidebar{grid-column:1;position:static}
+  .article{grid-column:1;grid-row:1}
+  .blog-sidebar{grid-column:1;grid-row:2;position:static}
   .blog-hero h1{font-size:clamp(1.6rem,3vw,2.4rem)}
   .article h2{font-size:1.3rem;margin:2rem 0 1rem}
   .article table{font-size:0.85rem}
@@ -121,25 +119,22 @@ footer{border-top:1px solid var(--stroke);padding:2.5rem 0;margin-top:4rem;text-
 <body>
 <nav>
   <div class="inner">
-    <a href="/" class="nav-logo"><em>Jaya</em> Preethi.Mohan</a>
+    <a href="index.html" class="nav-logo"><em>Jaya</em> Preethi.Mohan</a>
     <ul class="nav-links" id="navLinks">
-      <li><a href="/#about">About</a></li>
-      <li><a href="/#research">Research</a></li>
-      <li><a href="/#experience">Experience</a></li>
-      <li><a href="/#expertise">Expertise</a></li>
-      <li><a href="/#awards">Awards</a></li>
-      <li><a href="/#publications">Publications</a></li>
-      <li><a href="/blog.html">Writing</a></li>
-      <li><a href="/#contact">Contact</a></li>
+      <li><a href="index.html#about">About</a></li>
+      <li><a href="index.html#research">Research</a></li>
+      <li><a href="index.html#experience">Experience</a></li>
+      <li><a href="index.html#expertise">Expertise</a></li>
+      <li><a href="index.html#awards">Awards</a></li>
+      <li><a href="index.html#publications">Publications</a></li>
+      <li><a href="blog.html">Writing</a></li>
+      <li><a href="index.html#contact">Contact</a></li>
     </ul>
     <button class="hamburger" id="ham"><span></span><span></span><span></span></button>
   </div>
 </nav>
 
 <section class="blog-hero">
-  <div class="hero-back">
-    <a href="/blog.html">← Back to Writing</a>
-  </div>
   <div class="container blog-hero-content">
     <h1>More GPUs, Slower AI: Why Scaling Hardware Can Break Your Training</h1>
     <div class="blog-hero-meta">
@@ -245,16 +240,37 @@ footer{border-top:1px solid var(--stroke);padding:2.5rem 0;margin-top:4rem;text-
         <div class="blog-footer-author">
           <p><em>Jaya Preethi Mohan</em> is a Doctoral Researcher in Computer Science at the University of North Dakota and a former Computer Scientist on the Advanced Computing Team at Pacific Northwest National Laboratory.</p>
         </div>
-        <div class="blog-nav">
-          <a href="/blog.html" class="blog-nav-item">
-            <span class="blog-nav-label">← Previous</span>
-            <span class="blog-nav-title">Back to All Articles</span>
-          </a>
-        </div>
       </div>
     </article>
 
     <aside class="blog-sidebar">
+      <div class="sidebar-video" style="background:var(--surface-1);border:1px solid var(--stroke);border-radius:4px;overflow:hidden;margin-bottom:1.5rem">
+        <div class="sidebar-nav-title" style="padding:1rem;border-bottom:1px solid var(--stroke)">Watch the Video</div>
+        <div style="padding:0.8rem">
+          <a href="https://youtu.be/xCJ8j0VFhWc" target="_blank" rel="noopener" style="display:block;text-decoration:none;color:inherit">
+            <div style="position:relative;overflow:hidden;border-radius:2px;margin-bottom:0.8rem;background:#000">
+              <img src="https://i.ytimg.com/vi/xCJ8j0VFhWc/hqdefault.jpg" alt="More GPUs, Slower AI" style="width:100%;height:auto;display:block" />
+              <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.2);opacity:0;transition:opacity 0.2s" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0">
+                <div style="width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,0.95);display:flex;align-items:center;justify-content:center">
+                  <svg viewBox="0 0 24 24" fill="#1C5F43" style="width:18px;height:18px;margin-left:2px"><polygon points="8 5 20 12 8 19"/></svg>
+                </div>
+              </div>
+            </div>
+            <div style="font-family:var(--serif);font-size:0.9rem;color:var(--ink-0);line-height:1.25;font-weight:400">More GPUs, Slower AI?</div>
+            <div style="font-family:var(--mono);font-size:0.6rem;color:var(--ink-3);margin-top:0.4rem">1:52 · YouTube</div>
+          </a>
+        </div>
+      </div>
+      <nav class="sidebar-nav" style="margin-bottom:1.5rem">
+        <div class="sidebar-nav-title">Topics Covered</div>
+        <ul>
+          <li><a href="#amdahl">Amdahl's Law & Scaling</a></li>
+          <li><a href="#math">Floating-Point Precision</a></li>
+          <li><a href="#gpu-generations">Hardware Generation Effects</a></li>
+          <li><a href="#barrier">Barrier Synchronization</a></li>
+          <li><a href="#scientific">Scientific ML Impact</a></li>
+        </ul>
+      </nav>
       <nav class="sidebar-nav">
         <div class="sidebar-nav-title">Jump to Section</div>
         <ul>
