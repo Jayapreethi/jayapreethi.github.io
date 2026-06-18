@@ -184,6 +184,15 @@ footer{background:var(--surface-1);border-top:1px solid var(--stroke);padding:1.
 
   <div class="callout">The system reports success when the job completes. The algorithm's contract was violated three steps earlier, and nothing logged it.</div>
 
+  <figure class="fig reveal" style="margin:2rem 0">
+    <img src="images/assumption_mismatch_infographic.png" alt="GPS analogy illustrating assumption mismatch: a navigation app reporting success while hidden assumptions — map freshness, road closures, traffic, battery and signal — have already changed" style="width:100%;height:auto;display:block;" />
+    <figcaption style="padding:0.9rem 1.1rem;line-height:1.8;font-family:var(--sans);font-size:0.83rem;color:var(--ink-2);background:var(--surface-1);border-top:1px solid var(--stroke)">
+      <p style="margin-bottom:0.55rem">The GPS app reports "Route ready" while hidden assumptions — map freshness, road closures, traffic, battery and signal — have already shifted; the success notification and the assumption layer operate on entirely separate planes.</p>
+      <p style="margin-bottom:0.55rem">The analogy maps directly onto the problem: the app is the system, the route plan encodes the hidden assumptions, and the trip result is the output — arriving at a plausible but wrong location is the scientific equivalent of a solver that converges to the wrong answer without raising an error.</p>
+      <p>The fix is not a smarter navigation layer alone; it requires making assumptions visible before the job starts, checking them live as the computation runs, and logging every environmental change that could alter the numerical outcome.</p>
+    </figcaption>
+  </figure>
+
   <p>What makes this particularly difficult is that the failures are often not loud. A segfault is easy to find. A convergence that reached a wrong solution quietly, because floating-point reduction happened in a different order than the solver expected, is not. The system did exactly what it was asked to do. The algorithm's assumptions about what the system would do were never stated, never checked, and never honored.</p>
 
   <h3 id="contract">The contract no one reads</h3>
