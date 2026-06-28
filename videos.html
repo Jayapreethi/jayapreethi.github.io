@@ -63,7 +63,7 @@ nav .inner{max-width:1100px;margin:0 auto;padding:0 2rem;height:100%;display:fle
 .v-card:hover{border-color:var(--stroke-md);transform:translateX(3px);box-shadow:0 4px 18px rgba(0,0,0,0.06)}
 
 /* Thumbnail */
-.v-thumb{position:relative;overflow:hidden;background:#0a0a0a}
+.v-thumb{position:relative;overflow:hidden;background:#0a0a0a;height:214px}
 .v-thumb img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .4s ease}
 .v-card:hover .v-thumb img{transform:scale(1.03)}
 .v-thumb-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.15);opacity:0;transition:opacity .3s}
@@ -154,6 +154,34 @@ footer{background:var(--surface-1);border-top:1px solid var(--stroke);padding:1.
 
 <div class="page-content">
   <div class="video-grid">
+
+    <!-- Video 0 -->
+    <a href="https://youtu.be/SxKgwj4onmI" class="v-card reveal" target="_blank" rel="noopener">
+      <div class="v-thumb">
+        <img src="https://i.ytimg.com/vi/SxKgwj4onmI/maxresdefault.jpg" alt="Is Quantum Computing the Future Beyond Serverless? thumbnail"
+             onerror="this.src='https://i.ytimg.com/vi/SxKgwj4onmI/hqdefault.jpg'" />
+        <div class="v-thumb-overlay">
+          <div class="v-play-btn">
+            <svg viewBox="0 0 24 24" fill="#1C5F43"><polygon points="8 5 20 12 8 19"/></svg>
+          </div>
+        </div>
+        <div class="v-duration">2:00</div>
+      </div>
+      <div class="v-body">
+        <div class="v-venue">Quantum &nbsp;&middot;&nbsp; Scientific Computing &nbsp;&middot;&nbsp; Cloud</div>
+        <div class="v-title">Is Quantum Computing the Future Beyond Serverless?</div>
+        <div class="v-desc">Serverless computing hides infrastructure from developers. But what comes after? Quantum computing introduces a fundamentally different model built around quantum states, gates, and measurement. This video explores how quantum differs from classical cloud execution, why quantum circuits aren't equivalent to cloud functions, and what hybrid quantum-cloud systems mean for computing's future.</div>
+        <div class="tag-row">
+          <span class="tag">Quantum Computing</span>
+          <span class="tag">Cloud Architecture</span>
+          <span class="tag">Hybrid Systems</span>
+        </div>
+        <div class="v-meta">
+          <span class="v-date">June 2026</span>
+          <span class="v-watch">Watch on YouTube &rarr;</span>
+        </div>
+      </div>
+    </a>
 
     <!-- Video 1 -->
     <a href="https://youtu.be/kNNUwgewJ-c" class="v-card reveal" target="_blank" rel="noopener">
