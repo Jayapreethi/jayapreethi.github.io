@@ -114,7 +114,7 @@ footer{background:var(--surface-1);border-top:1px solid var(--stroke);padding:1.
 /* ── Reveal ── */
 .reveal{opacity:0;transform:translateY(18px);transition:opacity .65s ease,transform .65s ease}
 .reveal.on{opacity:1;transform:none}
-.reveal.d1{transition-delay:.1s}.reveal.d2{transition-delay:.2s}.reveal.d3{transition-delay:.3s}.reveal.d4{transition-delay:.4s}.reveal.d5{transition-delay:.5s}.reveal.d6{transition-delay:.6s}.reveal.d7{transition-delay:.7s}
+.reveal.d1{transition-delay:.1s}.reveal.d2{transition-delay:.2s}.reveal.d3{transition-delay:.3s}
 
 @keyframes rise{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
 @media(max-width:768px){
@@ -131,6 +131,7 @@ footer{background:var(--surface-1);border-top:1px solid var(--stroke);padding:1.
 </head>
 <body>
 
+<!-- ── Nav ── -->
 <nav>
   <div class="inner">
     <a href="index.html" class="nav-logo">Jaya Preethi<em>.</em>Mohan</a>
@@ -143,12 +144,12 @@ footer{background:var(--surface-1);border-top:1px solid var(--stroke);padding:1.
       <li><a href="index.html#awards">Awards</a></li>
       <li><a href="index.html#publications">Publications</a></li>
       <li><a href="blog.html" class="active">Blog</a></li>
-      <li><a href="videos.html">Videos</a></li>
       <li><a href="index.html#contact">Contact</a></li>
     </ul>
   </div>
 </nav>
 
+<!-- ── Page header ── -->
 <header class="page-header">
   <div class="page-header-inner">
     <div class="sec-eye">Writing</div>
@@ -157,23 +158,49 @@ footer{background:var(--surface-1);border-top:1px solid var(--stroke);padding:1.
   </div>
 </header>
 
+<!-- ── Filter bar ── -->
 <div class="filter-bar">
   <div class="filter-inner">
-    <button class="filter-btn active" data-filter="all">All Posts <span class="filter-count" id="count-all">8</span></button>
-    <button class="filter-btn" data-filter="infrastructure">Research Infrastructure <span class="filter-count" id="count-infrastructure">2</span></button>
-    <button class="filter-btn" data-filter="hpc">HPC &amp; Systems <span class="filter-count" id="count-hpc">5</span></button>
-    <button class="filter-btn" data-filter="ml">Scientific ML <span class="filter-count" id="count-ml">4</span></button>
+    <button class="filter-btn active" data-filter="all">All Posts <span class="filter-count" id="count-all">2</span></button>
+    <button class="filter-btn" data-filter="infrastructure">Research Infrastructure <span class="filter-count" id="count-infrastructure">1</span></button>
+    <button class="filter-btn" data-filter="hpc">HPC &amp; Systems <span class="filter-count" id="count-hpc">1</span></button>
+    <button class="filter-btn" data-filter="ml">Scientific ML <span class="filter-count" id="count-ml">1</span></button>
     <button class="filter-btn" data-filter="energy">Energy Systems <span class="filter-count" id="count-energy">1</span></button>
   </div>
 </div>
 
+<!-- ── Blog grid ── -->
 <div class="blog-grid-wrap">
   <div class="blog-grid" id="blogGrid">
 
+    <!--
+    ═══════════════════════════════════════════════════════════
+    HOW TO ADD A NEW POST
+    ═══════════════════════════════════════════════════════════
+    Copy the block below, update:
+      data-category  → one of: infrastructure | hpc | ml | energy
+      .blog-card-venue  → category label shown on card
+      .blog-card-title  → post title
+      .blog-card-excerpt → 2-3 sentence summary
+      .blog-card-meta   → "Month YYYY · N min read"
+      .tag items        → relevant tags
+      href on <a>       → path to the post HTML file
 
+    The first post uses class="blog-card featured" for full-width.
+    All subsequent posts use class="blog-card" for the 2-col grid.
+    ═══════════════════════════════════════════════════════════
+    -->
+
+    <!-- POST 1: ESRO (featured, full width) -->
     <a href="esro-blog-post.html" class="blog-card featured reveal" data-category="infrastructure hpc">
-      <div style="width:100%;height:100%;background:var(--surface-2);display:flex;align-items:stretch;">
-        <img src="images/esro_titlecard.png" alt="ESRO Titlecard" class="blog-card-img" style="width:100%;height:100%;object-fit:cover;object-position:center;" />
+      <div class="blog-card-img-placeholder">
+        <span class="icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round">
+            <rect x="2" y="3" width="20" height="14" rx="2"/>
+            <path d="M8 21h8M12 17v4"/>
+            <path d="M7 8h2M11 8h6M7 11h4M13 11h4"/>
+          </svg>
+        </span>
       </div>
       <div class="blog-card-body">
         <div class="blog-card-venue">Research Infrastructure &nbsp;&middot;&nbsp; HPC &amp; Systems</div>
@@ -188,7 +215,7 @@ footer{background:var(--surface-1);border-top:1px solid var(--stroke);padding:1.
           <span class="tag gold">Open Source</span>
         </div>
         <div class="blog-card-footer">
-          <span class="blog-card-meta">2025 &nbsp;&middot;&nbsp; 8 min read</span>
+          <span class="blog-card-meta">May 2026 &nbsp;&middot;&nbsp; 8 min read</span>
           <span class="blog-card-read">
             Read post
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
@@ -197,83 +224,23 @@ footer{background:var(--surface-1);border-top:1px solid var(--stroke);padding:1.
       </div>
     </a>
 
-    <a href="materials-copilot-blog.html" class="blog-card reveal d1" data-category="infrastructure hpc ml">
-      <img src="images/materials_copilot_titlecard.png" alt="Materials Copilot Titlecard" class="blog-card-img" />
-      <div class="blog-card-body">
-        <div class="blog-card-venue">Research Infrastructure &nbsp;&middot;&nbsp; HPC &amp; Systems</div>
-        <div class="blog-card-title">Building an Offline-First Literature Intelligence System for HPC</div>
-        <div class="blog-card-excerpt">How I designed the CO2M pipeline inside Materials Copilot to run without internet access, survive preemption, and still give researchers something useful at the end. An artifact-materialization approach to scientific literature intelligence.</div>
-        <div class="tag-row">
-          <span class="tag">Offline-First</span>
-          <span class="tag">SLURM</span>
-          <span class="tag">Parquet</span>
-          <span class="tag">Streamlit</span>
-          <span class="tag">HPC</span>
-          <span class="tag gold">Materials Science</span>
-        </div>
-        <div class="blog-card-footer">
-          <span class="blog-card-meta">2026 &nbsp;&middot;&nbsp; 12 min read</span>
-          <span class="blog-card-read">
-            Read post
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-          </span>
-        </div>
+    <!-- POST 2: DER LLM Framework -->
+    <a href="der-llm-blog-post.html" class="blog-card reveal d1" data-category="infrastructure ml energy">
+      <div class="blog-card-img-placeholder">
+        <span class="icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round">
+            <rect x="7" y="7" width="10" height="10" rx="1"/>
+            <line x1="9" y1="1" x2="9" y2="7"/><line x1="15" y1="1" x2="15" y2="7"/>
+            <line x1="9" y1="17" x2="9" y2="23"/><line x1="15" y1="17" x2="15" y2="23"/>
+            <line x1="1" y1="9" x2="7" y2="9"/><line x1="1" y1="15" x2="7" y2="15"/>
+            <line x1="17" y1="9" x2="23" y2="9"/><line x1="17" y1="15" x2="23" y2="15"/>
+          </svg>
+        </span>
       </div>
-    </a>
-
-    <a href="more-gpus-slower-ai.html" class="blog-card reveal d2" data-category="hpc ml">
-      <img src="images/gpu_infograph.png" alt="More GPUs Slower AI Infographic" class="blog-card-img" />
-      <div class="blog-card-body">
-        <div class="blog-card-venue">HPC &amp; Systems &nbsp;&middot;&nbsp; Distributed Training</div>
-        <div class="blog-card-title">More GPUs, Slower AI: Why Scaling Hardware Can Break Your Training</div>
-        <div class="blog-card-excerpt">Why adding GPUs often fails to accelerate training. Explores communication overhead, floating-point precision changes, barrier synchronization, and practical scaling efficiency tests that most teams never run.</div>
-        <div class="tag-row">
-          <span class="tag">Distributed Training</span>
-          <span class="tag">GPU Scaling</span>
-          <span class="tag">HPC Clusters</span>
-          <span class="tag">Scientific ML</span>
-          <span class="tag">Amdahl's Law</span>
-        </div>
-        <div class="blog-card-footer">
-          <span class="blog-card-meta">2026 &nbsp;&middot;&nbsp; 10 min read</span>
-          <span class="blog-card-read">
-            Read post
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-          </span>
-        </div>
-      </div>
-    </a>
-
-    <a href="gpu-vs-cpu-physics-blog.html" class="blog-card reveal d3" data-category="hpc ml">
-      <img src="images/fisher-kpp-cover.png" alt="Fisher-KPP GPU vs CPU Physics Cover" class="blog-card-img" />
-      <div class="blog-card-body">
-        <div class="blog-card-venue">HPC &amp; Systems &nbsp;&middot;&nbsp; Scientific ML</div>
-        <div class="blog-card-title">The GPU Was Slower Than the CPU: What Physics Revealed About AI Acceleration</div>
-        <div class="blog-card-excerpt">I ran a Fisher-KPP reaction-diffusion solver on both CPU and GPU. The GPU was 3.7× slower. Instead of treating that as failure, I used it to validate correctness first, performance second.</div>
-        <div class="tag-row">
-          <span class="tag">GPU Performance</span>
-          <span class="tag">Scientific Computing</span>
-          <span class="tag">PyTorch</span>
-          <span class="tag">Physics Validation</span>
-          <span class="tag">HPC</span>
-          <span class="tag">Reproducibility</span>
-        </div>
-        <div class="blog-card-footer">
-          <span class="blog-card-meta">2026 &nbsp;&middot;&nbsp; 7 min read</span>
-          <span class="blog-card-read">
-            Read post
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-          </span>
-        </div>
-      </div>
-    </a>
-
-    <a href="containerized-llm-blog.html" class="blog-card reveal d4" data-category="infrastructure ml energy">
-      <img src="images/arch.png" alt="DER LLM Titlecard" class="blog-card-img" />
       <div class="blog-card-body">
         <div class="blog-card-venue">LLM Deployment &nbsp;&middot;&nbsp; Energy Systems</div>
-        <div class="blog-card-title">From Docker to Multi-Cloud HPC: Securing LLM Workflows for Critical Infrastructure</div>
-        <div class="blog-card-excerpt">How a dual-container architecture deploys large language models across AWS, GCP, and Azure for energy grid analytics, with automated security testing, ML-driven insights, and a path to HPC at national laboratories. Published at IEEE Cloud Summit 2025.</div>
+        <div class="blog-card-title">DER LLM Framework</div>
+        <div class="blog-card-excerpt">A containerized deployment architecture for large language models in distributed energy resource analytics, with physics constraint validation against the IEEE 118-bus benchmark. Published at IEEE Cloud Summit 2025.</div>
         <div class="tag-row">
           <span class="tag">Containerized LLM</span>
           <span class="tag">DER Analytics</span>
@@ -290,85 +257,21 @@ footer{background:var(--surface-1);border-top:1px solid var(--stroke);padding:1.
       </div>
     </a>
 
-    <a href="ai-reproducibility-blog.html" class="blog-card reveal d5" data-category="ml hpc">
-      <img src="images/ai_reprod_titlecard.png" alt="AI Reproducibility Titlecard" class="blog-card-img" />
-      <div class="blog-card-body">
-        <div class="blog-card-venue">Scientific ML &nbsp;&middot;&nbsp; HPC &amp; Systems</div>
-        <div class="blog-card-title">Containerized ML Is Not the Same as Reproducible ML</div>
-        <div class="blog-card-excerpt">Containers improve environment portability, but scientific AI results also depend on hardware, numerical behavior, runtime library choices, and domain validation. A practical framework for thinking about reproducibility in scientific machine learning across three levels of rigor.</div>
-        <div class="tag-row">
-          <span class="tag">AI Reproducibility</span>
-          <span class="tag">Scientific ML</span>
-          <span class="tag">HPC</span>
-          <span class="tag">Containers</span>
-        </div>
-        <div class="blog-card-footer">
-          <span class="blog-card-meta">2026 &nbsp;&middot;&nbsp; 9 min read</span>
-          <span class="blog-card-read">
-            Read post
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-          </span>
-        </div>
-      </div>
-    </a>
+    <!-- PLACEHOLDER: Add future posts below this line using class="blog-card" -->
 
+  </div>
 
-
-    <a href="assumption-mismatch-blog.html" class="blog-card reveal d6" data-category="ml hpc">
-      <img src="images/algo_mismatch.png" alt="Assumption Mismatch Titlecard" class="blog-card-img" />
-      <div class="blog-card-body">
-        <div class="blog-card-venue">Scientific ML &nbsp;&middot;&nbsp; HPC &amp; Systems</div>
-        <div class="blog-card-title">Assumption Mismatch: What Scientific Algorithms Expect and What Systems Deliver</div>
-        <div class="blog-card-excerpt">Scientific algorithms carry implicit contracts with the systems that run them. CI/CD pipelines, HPC schedulers, cloud orchestration, and quantum queues were not designed to honor those contracts. Explore the gap and how to bridge it.</div>
-        <div class="tag-row">
-          <span class="tag">Assumption Mismatch</span>
-          <span class="tag">Scientific ML</span>
-          <span class="tag">HPC</span>
-          <span class="tag">Cloud</span>
-        </div>
-        <div class="blog-card-footer">
-          <span class="blog-card-meta">2026 &nbsp;&middot;&nbsp; 11 min read</span>
-          <span class="blog-card-read">
-            Read post
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-          </span>
-        </div>
-      </div>
-    </a>
-
-    <a href="quantum-serverless-blog.html" class="blog-card reveal d7" data-category="quantum cloud ml">
-      <img src="images/quantum-blog-title-card.png" alt="Quantum Serverless Titlecard" class="blog-card-img" />
-      <div class="blog-card-body">
-        <div class="blog-card-venue">Quantum Computing &nbsp;&middot;&nbsp; Cloud</div>
-        <div class="blog-card-title">Quantum Serverless: Scalable Quantum Workflows</div>
-        <div class="blog-card-excerpt">How serverless and containerization are enabling scalable, reproducible quantum computing workflows in the cloud. Explore hybrid ML and quantum use cases and modern orchestration patterns.</div>
-        <div class="tag-row">
-          <span class="tag">Quantum</span>
-          <span class="tag">Serverless</span>
-          <span class="tag">Cloud</span>
-          <span class="tag">Containers</span>
-        </div>
-        <div class="blog-card-footer">
-          <span class="blog-card-meta">2026 &nbsp;&middot;&nbsp; 7 min read</span>
-          <span class="blog-card-read">
-            Read post
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-          </span>
-        </div>
-      </div>
-    </a>
-
-    <div class="empty-state" id="emptyState" style="display:none">
-      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="1.4" stroke-linecap="round" style="margin:0 auto 0.75rem"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/></svg>
-      <p>No posts in this category yet. Check back soon.</p>
-    </div>
-
+  <!-- Empty state shown when a filter returns no results -->
+  <div class="empty-state" id="emptyState" style="display:none">
+    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="1.4" stroke-linecap="round" style="margin:0 auto 0.75rem"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/></svg>
+    <p>No posts in this category yet. Check back soon.</p>
   </div>
 
 </div>
 
 <div class="rule"></div>
 
+<!-- ── Footer ── -->
 <footer>
   <div class="container">
     <p class="foot-txt">© 2026 <em>Jaya Preethi Mohan</em></p>

@@ -1,0 +1,23 @@
+// This batch script will help you quickly set up and push your site to GitHub Pages.
+// 1. Make sure you have git installed and are in the gitio folder.
+// 2. Replace YOURUSERNAME with your actual GitHub username.
+// 3. Run each command in your terminal (PowerShell or CMD).
+
+// Rename test.html to index.html (if not already done)
+rename test.html index.html
+
+// Initialize git (if not already a repo)
+git init
+
+git add index.html images README.md .gitignore
+
+git commit -m "Initial commit for GitHub Pages deployment"
+
+git branch -M main
+
+git remote add origin https://github.com/YOURUSERNAME/YOURUSERNAME.github.io.git
+
+git push -u origin main
+
+// After a few minutes, your site will be live at:
+// https://YOURUSERNAME.github.io/

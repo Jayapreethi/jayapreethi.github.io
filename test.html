@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<title>Containerized ML Is Not the Same as Reproducible ML · Jaya Preethi Mohan</title>
+
+<meta name="description" content="A technical blog on why containerized machine learning workflows improve reproducibility but do not automatically guarantee identical scientific results." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+<style>
+:root {
+  --surface-0: #F4F6F9;
+  --surface-1: #FFFFFF;
+  --surface-2: #EEF1F6;
+
+  --stroke: #DDE2EC;
+  --stroke-md: #C8CFE0;
+
+  --grn: #1C5F43;
+  --grn-mid: #237A54;
+  --grn-light: #E8F4EF;
+  --grn-xlight: #F2FAF6;
+
+  --gld: #8B6914;
+  --gld-light: #FBF5E6;
+
+  --ink-0: #111827;
+  --ink-1: #374151;
+  --ink-2: #6B7280;
+  --ink-3: #9CA3AF;
+
+  --serif: 'DM Serif Display', Georgia, serif;
+  --sans: 'Inter', system-ui, sans-serif;
+  --mono: 'JetBrains Mono', 'Courier New', monospace;
+
+  --nav-h: 64px;
+}
+
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+body {
+  font-family: var(--sans);
+  background: var(--surface-0);
+  color: var(--ink-1);
+  line-height: 1.75;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--grn-light);
+  color: var(--grn);
+}
+
+a {
+  color: var(--grn);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--gld);
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+/* NAV */
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 200;
+  height: var(--nav-h);
+  background: rgba(255,255,255,0.90);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--stroke);
+}
+
+nav .inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav-logo {
+  font-family: var(--sans);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--ink-0);
+}
+
+.nav-logo em {
+  font-style: normal;
+  color: var(--grn);
+}
+
+.nav-links {
+  display: flex;
+  gap: 2rem;
+  list-style: none;
+}
+
+.nav-links a {
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  position: relative;
+}
+
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  left: 0;
+  width: 0;
+  height: 1.5px;
+  background: var(--grn);
+  transition: width .3s ease;
+}
+
+.nav-links a:hover {
+  color: var(--grn);
+}
+
+.nav-links a:hover::after {
+  width: 100%;
+}
+
+/* BLOG HERO */
+.blog-hero {
+  padding: calc(var(--nav-h) + 5rem) 0 3.5rem;
+  background: var(--surface-1);
+  border-bottom: 1px solid var(--stroke);
+}
+
+.blog-kicker {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--grn);
+  margin-bottom: 1rem;
+}
+
+.blog-kicker::before {
+  content: '// ';
+  color: var(--ink-3);
+}
+
+.blog-title {
+  font-family: var(--serif);
+  font-size: clamp(2.4rem, 5vw, 4.8rem);
+  font-weight: 400;
+  line-height: 1.02;
+  color: var(--ink-0);
+  max-width: 900px;
+  margin-bottom: 1.2rem;
+}
+
+.blog-title em {
+  font-style: italic;
+  color: var(--grn);
+}
+
+.blog-subtitle {
+  max-width: 760px;
+  color: var(--ink-2);
+  font-size: 1rem;
+  line-height: 1.9;
+  margin-bottom: 1.4rem;
+}
+
+.blog-meta {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+/* MAIN LAYOUT */
+.blog-wrap {
+  padding: 4rem 0 5rem;
+}
+
+.blog-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 240px;
+  gap: 3rem;
+  align-items: start;
+}
+
+.article-card {
+  background: var(--surface-1);
+  border: 1px solid var(--stroke);
+  padding: clamp(2rem, 5vw, 4rem);
+  box-shadow: 0 8px 28px rgba(17,24,39,0.04);
+}
+
+.article-card h2 {
+  font-family: var(--serif);
+  font-size: clamp(1.8rem, 3vw, 2.45rem);
+  font-weight: 400;
+  color: var(--ink-0);
+  line-height: 1.15;
+  margin: 3rem 0 1rem;
+}
+
+.article-card h2:first-child {
+  margin-top: 0;
+}
+
+.article-card h3 {
+  font-family: var(--sans);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--grn);
+  margin: 2rem 0 0.7rem;
+}
+
+.article-card p {
+  font-size: 0.94rem;
+  color: var(--ink-1);
+  line-height: 1.9;
+  margin-bottom: 1rem;
+}
+
+.article-card ul {
+  margin: 0 0 1.4rem 1.2rem;
+}
+
+.article-card li {
+  font-size: 0.9rem;
+  color: var(--ink-1);
+  margin-bottom: 0.45rem;
+}
+
+.article-card strong {
+  color: var(--ink-0);
+  font-weight: 600;
+}
+
+.callout {
+  margin: 2rem 0;
+  padding: 1.4rem 1.6rem;
+  background: var(--grn-xlight);
+  border-left: 3px solid var(--grn);
+  color: var(--grn);
+  font-family: var(--serif);
+  font-size: 1.35rem;
+  line-height: 1.45;
+}
+
+.figure {
+  margin: 2.5rem 0;
+  background: var(--surface-1);
+  border: 1px solid var(--stroke);
+  padding: 0.75rem;
+}
+
+.figure img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.caption {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.04em;
+  color: var(--ink-3);
+  margin-top: 0.7rem;
+  padding: 0 0.2rem;
+}
+
+/* SIDEBAR */
+.sidebar {
+  position: sticky;
+  top: calc(var(--nav-h) + 2rem);
+  background: var(--surface-1);
+  border: 1px solid var(--stroke);
+  padding: 1.4rem;
+}
+
+.sidebar-title {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--grn);
+  margin-bottom: 0.8rem;
+}
+
+.sidebar a {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--ink-2);
+  padding: 0.65rem 0;
+  border-bottom: 1px solid var(--stroke);
+}
+
+.sidebar a:last-child {
+  border-bottom: none;
+}
+
+.sidebar a:hover {
+  color: var(--grn);
+}
+
+/* TAGS */
+.tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 1.6rem;
+}
+
+.tag {
+  font-family: var(--mono);
+  font-size: 0.56rem;
+  letter-spacing: 0.04em;
+  padding: 0.28rem 0.6rem;
+  background: var(--grn-xlight);
+  color: var(--grn);
+  border: 1px solid rgba(28,95,67,0.12);
+}
+
+/* FOOTER */
+footer {
+  background: var(--surface-1);
+  border-top: 1px solid var(--stroke);
+  padding: 1.6rem 0;
+  text-align: center;
+}
+
+.foot-txt {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.04em;
+  color: var(--ink-3);
+}
+
+.foot-txt em {
+  font-style: normal;
+  color: var(--grn);
+}
+
+@media (max-width: 900px) {
+  .blog-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    position: static;
+    order: -1;
+  }
+
+  .nav-links {
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 640px) {
+  nav .inner {
+    padding: 0 1.2rem;
+  }
+
+  .nav-links {
+    display: none;
+  }
+
+  .container {
+    padding: 0 1.2rem;
+  }
+
+  .blog-hero {
+    padding-top: calc(var(--nav-h) + 3rem);
+  }
+
+  .article-card {
+    padding: 1.6rem;
+  }
+
+  .blog-title {
+    font-size: 2.4rem;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<nav>
+  <div class="inner">
+    <a href="../index.html" class="nav-logo">Jay<em>.</em>Mohan</a>
+    <ul class="nav-links">
+      <li><a href="../index.html#about">About</a></li>
+      <li><a href="../index.html#research">Research</a></li>
+      <li><a href="../index.html#experience">Experience</a></li>
+      <li><a href="../index.html#publications">Publications</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="blog-hero">
+  <div class="container">
+    <div class="blog-kicker">Technical Blog · AI Reproducibility</div>
+
+    <h1 class="blog-title">
+      Containerized ML Is Not the Same as <em>Reproducible ML</em>
+    </h1>
+
+    <p class="blog-subtitle">
+      Containers help preserve software environments, but scientific AI results
+      also depend on hardware, numerical behavior, runtime choices, workflow
+      provenance, and validation.
+    </p>
+
+    <div class="blog-meta">
+      May 2026 · Scientific ML · HPC · AI Infrastructure
+    </div>
+
+    <div class="tag-row">
+      <span class="tag">AI Reproducibility</span>
+      <span class="tag">Scientific ML</span>
+      <span class="tag">HPC</span>
+      <span class="tag">Containers</span>
+      <span class="tag">ML Workflows</span>
+    </div>
+  </div>
+</header>
+
+<main class="blog-wrap">
+  <div class="container">
+    <div class="blog-grid">
+
+      <article class="article-card">
+
+        <figure class="figure">
+          <img src="../images/containerized-vs-reproducible-ml.png" alt="Infographic explaining that containerized machine learning is not the same as reproducible machine learning">
+          <figcaption class="caption">
+            Containerization captures the software environment, but reproducibility requires control across the full stack.
+          </figcaption>
+        </figure>
+
+        <h2 id="core-problem">The core problem</h2>
+
+        <p>
+          Containerization has become one of the most useful practices in modern
+          machine learning and scientific computing. Docker, Singularity, and
+          Apptainer help researchers package code, libraries, and runtime
+          environments so experiments are easier to move across laptops,
+          institutional clusters, cloud systems, and HPC environments.
+        </p>
+
+        <p>
+          That is a major improvement over the old “works on my machine” problem.
+          But there is an important distinction that often gets blurred.
+        </p>
+
+        <div class="callout">
+          A container can help reproduce a software environment. It does not
+          automatically reproduce a scientific result.
+        </div>
+
+        <p>
+          For research teams working with deep learning, physics-informed models,
+          simulation workflows, or large-scale HPC systems, this distinction
+          matters. Two experiments can use the same code, the same container image,
+          and the same dataset, yet still produce different results because
+          numerical behavior, hardware execution, runtime library choices, and
+          workflow decisions may not be fully controlled.
+        </p>
+
+        <h2 id="what-containers-do">What containers do well</h2>
+
+        <p>
+          Containers are valuable because they make software environments more
+          portable and easier to inspect. They can help teams preserve package
+          versions, system libraries, directory structure, configuration files,
+          runtime dependencies, and the basic execution environment.
+        </p>
+
+        <p>
+          For many engineering workflows, that is enough to make deployment more
+          predictable. For scientific machine learning, it is necessary but not
+          sufficient.
+        </p>
+
+        <figure class="figure">
+          <img src="../images/same-container-different-results.png" alt="High-level infographic showing same container but different results across compute systems">
+          <figcaption class="caption">
+            Same container, different hardware/runtime/precision/validation choices.
+          </figcaption>
+        </figure>
+
+        <h2 id="same-environment">Same environment is not always same result</h2>
+
+        <p>
+          A container answers one question well: can someone run this code in a
+          similar software environment? Scientific reproducibility requires more:
+          whether the result remains stable across repeated runs, whether it
+          holds across hardware platforms, and whether small numerical differences
+          change the scientific conclusion.
+        </p>
+
+        <p>
+          In deep learning, small numerical differences can sometimes accumulate
+          during optimization. In many cases, the final answer may still be
+          scientifically consistent. In other cases, differences in precision,
+          GPU kernels, reduction order, or nondeterministic operations can affect
+          convergence behavior, evaluation metrics, or model selection.
+        </p>
+
+        <h2 id="where-breaks">Where reproducibility can still break</h2>
+
+        <h3>1. Dependency specifications may be incomplete</h3>
+        <p>
+          A Dockerfile or container recipe may appear precise while still leaving
+          important details unresolved: base image digest, cuDNN point release,
+          cuBLAS or NCCL version, compiler options, GPU architecture, and
+          transitive Python dependencies.
+        </p>
+
+        <h3>2. GPU libraries make runtime decisions</h3>
+        <p>
+          Modern GPU libraries are optimized for performance. They may choose
+          algorithms dynamically based on tensor shapes, available memory, device
+          architecture, benchmarking settings, and other runtime conditions.
+          Different low-level execution paths may be mathematically equivalent
+          in exact arithmetic, but floating-point arithmetic is not exact.
+        </p>
+
+        <h3>3. Floating-point differences can accumulate</h3>
+        <p>
+          Floating-point arithmetic depends on operation order, data type,
+          hardware implementation, and parallel reduction behavior. In large-scale
+          training, these effects can influence loss curves, convergence timing,
+          and occasionally model selection.
+        </p>
+
+        <h3>4. Workflow provenance is often incomplete</h3>
+        <p>
+          Reproducibility is not only about rerunning the final script. Scientific
+          workflows involve exploration: data cleaning, feature engineering,
+          failed experiments, hyperparameter search, simulation-based validation,
+          and threshold decisions used to select final results.
+        </p>
+
+        <h2 id="checklist">A practical checklist</h2>
+
+        <ul>
+          <li>Use immutable container image digests when possible.</li>
+          <li>Pin direct and transitive dependencies.</li>
+          <li>Record CUDA, cuDNN, cuBLAS, NCCL, compiler, and driver versions.</li>
+          <li>Record GPU model, compute capability, memory, and driver version.</li>
+          <li>Save runtime logs at the beginning of each experiment.</li>
+          <li>Record precision settings such as FP32, TF32, BF16, or FP16.</li>
+          <li>Run more than one seed for publication-quality claims.</li>
+          <li>Validate not only predictive accuracy, but also domain consistency.</li>
+        </ul>
+
+        <h2 id="path-forward">The path forward</h2>
+
+        <p>
+          Perfect bitwise reproducibility may not always be realistic for modern
+          ML systems, especially at scale. But that should not be the only
+          standard.
+        </p>
+
+        <p>
+          A more useful goal is robust scientific reproducibility: results that
+          are stable enough, documented enough, and validated enough for others
+          to build on.
+        </p>
+
+        <div class="callout">
+          Containerization captures the software environment. Reproducibility
+          requires control, documentation, and verification across the entire stack.
+        </div>
+
+      </article>
+
+      <aside class="sidebar">
+        <div class="sidebar-title">On this page</div>
+        <a href="#core-problem">The core problem</a>
+        <a href="#what-containers-do">What containers do well</a>
+        <a href="#same-environment">Same environment vs same result</a>
+        <a href="#where-breaks">Where it breaks</a>
+        <a href="#checklist">Checklist</a>
+        <a href="#path-forward">The path forward</a>
+      </aside>
+
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    <p class="foot-txt">© 2026 <em>Jaya Preethi Mohan</em> · AI / ML · HPC · Scientific Computing</p>
+  </div>
+</footer>
+
+</body>
+</html>

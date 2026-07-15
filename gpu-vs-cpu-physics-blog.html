@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>The GPU Was Slower Than the CPU: What Physics Revealed About AI Acceleration · Jaya Preethi Mohan</title>
+<meta name="description" content="A reaction-diffusion solver on GPU vs CPU: why the GPU was 3.7x slower, why that mattered less than correctness validation, and what it taught about acceleration on HPC systems." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+:root{--surface-0:#F4F6F9;--surface-1:#FFFFFF;--surface-2:#EEF1F6;--stroke:#DDE2EC;--stroke-md:#C8CFE0;--grn:#1C5F43;--grn-mid:#237A54;--grn-light:#E8F4EF;--grn-xl:#F2FAF6;--gld:#8B6914;--gld-light:#FBF5E6;--ink-0:#111827;--ink-1:#374151;--ink-2:#6B7280;--ink-3:#9CA3AF;--serif:'DM Serif Display',Georgia,serif;--sans:'Inter',system-ui,sans-serif;--mono:'JetBrains Mono','Courier New',monospace;--nav-h:64px}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:var(--sans);background:var(--surface-0);color:var(--ink-1);line-height:1.7;font-weight:400;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+::selection{background:var(--grn-light);color:var(--grn)}
+.container{max-width:1100px;margin:0 auto;padding:0 2rem}
+a{color:var(--grn);text-decoration:none;transition:color .2s}
+a:hover{color:var(--gld)}
+.icon{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+.icon svg{width:100%;height:100%;fill:currentColor}
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);background:rgba(255,255,255,0.92);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--stroke)}
+nav .inner{max-width:1100px;margin:0 auto;padding:0 2rem;height:100%;display:flex;align-items:center;justify-content:space-between;gap:3rem}
+.nav-logo{font-family:var(--sans);font-size:0.82rem;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;color:var(--ink-0);white-space:nowrap;margin-right:auto;margin-left:-0.5rem}
+.nav-logo em{font-style:normal;color:var(--grn)}
+.nav-links{display:flex;gap:2rem;list-style:none}
+.nav-links a{font-size:0.72rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-2);position:relative;transition:color .2s}
+.nav-links a::after{content:'';position:absolute;bottom:-6px;left:0;width:0;height:1.5px;background:var(--grn);transition:width .3s ease}
+.nav-links a:hover{color:var(--grn)}
+.nav-links a:hover::after{width:100%}
+.hamburger{display:none;background:none;border:none;cursor:pointer;width:24px;height:16px;position:relative}
+.hamburger span{display:block;width:100%;height:1.5px;background:var(--ink-0);position:absolute;left:0;transition:all .3s}
+.hamburger span:nth-child(1){top:0}.hamburger span:nth-child(2){top:7px}.hamburger span:nth-child(3){top:14px}
+.hamburger.open span:nth-child(1){top:7px;transform:rotate(45deg)}
+.hamburger.open span:nth-child(2){opacity:0}
+.hamburger.open span:nth-child(3){top:7px;transform:rotate(-45deg)}
+.blog-hero{min-height:60vh;padding-top:var(--nav-h);display:flex;align-items:center;background:linear-gradient(135deg,rgba(28,95,67,0.06) 0%,rgba(28,95,67,0.02) 50%,transparent 100%);border-bottom:1px solid var(--stroke);position:relative}
+.blog-hero-content{margin-top:3rem;padding:0 2rem}
+.blog-hero h1{font-family:var(--serif);font-size:clamp(2rem,4vw,3.2rem);font-weight:400;line-height:1.15;color:var(--ink-0);margin-bottom:1rem}
+.blog-hero-meta{display:flex;align-items:center;gap:1.2rem;flex-wrap:wrap;font-size:0.85rem;color:var(--ink-2)}
+.blog-hero-meta span{display:flex;align-items:center;gap:0.4rem}
+.blog-hero-excerpt{font-family:var(--mono);font-size:0.95rem;color:var(--grn);margin-top:1.5rem;line-height:1.7;max-width:700px}
+.blog-content{display:grid;grid-template-columns:1fr 280px;gap:3rem;padding:3.5rem 0;position:relative;width:100%}
+.article{grid-column:1}
+.article h2{font-family:var(--serif);font-size:1.6rem;color:var(--ink-0);margin:2.5rem 0 1.2rem;line-height:1.25;font-weight:400}
+.article h3{font-family:var(--serif);font-size:1.2rem;color:var(--ink-0);margin:1.8rem 0 0.8rem;font-weight:400}
+.article p{font-size:1rem;color:var(--ink-1);line-height:1.85;margin-bottom:1.2rem;text-align:justify}
+.article ul,.article ol{margin:1.2rem 0 1.2rem 2rem;line-height:1.9}
+.article li{margin-bottom:0.6rem;color:var(--ink-1);font-size:1rem}
+.article em{font-style:italic;color:var(--ink-0)}
+.article strong{font-weight:600;color:var(--ink-0)}
+.article table{width:100%;border-collapse:collapse;margin:1.5rem 0;background:var(--surface-1);border:1px solid var(--stroke)}
+.article th{background:var(--grn-light);color:var(--grn);padding:0.8rem;text-align:left;font-weight:600;font-size:0.9rem}
+.article td{padding:0.8rem;border-bottom:1px solid var(--stroke);font-size:0.95rem;color:var(--ink-1)}
+.article tr:last-child td{border-bottom:none}
+.article figure{margin:2.5rem 0;padding:0;position:relative}
+.article figcaption{font-family:var(--mono);font-size:0.8rem;color:var(--ink-3);margin-top:0.6rem;line-height:1.6;text-align:center}
+.article img{width:100%;height:auto;display:block;border:1px solid var(--stroke);border-radius:4px}
+.callout{background:var(--grn-xl);border-left:3px solid var(--grn);padding:1.4rem;margin:2rem 0;border-radius:2px}
+.callout p{margin:0;font-size:0.95rem;color:var(--ink-1)}
+.callout strong{color:var(--grn)}
+.code-block{background:var(--ink-0);color:#fff;padding:1.2rem;border-radius:4px;overflow-x:auto;margin:1.2rem 0;font-family:var(--mono);font-size:0.85rem;line-height:1.6}
+.blog-sidebar{grid-column:2;position:sticky;top:var(--nav-h);height:max-content;padding-top:1rem}
+.sidebar-nav{background:var(--surface-1);border:1px solid var(--stroke);border-radius:4px;overflow:hidden}
+.sidebar-nav-title{font-family:var(--mono);font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--grn);padding:1rem;border-bottom:1px solid var(--stroke);font-weight:600}
+.sidebar-nav ul{list-style:none;padding:0}
+.sidebar-nav li{border-bottom:1px solid var(--stroke)}
+.sidebar-nav li:last-child{border-bottom:none}
+.sidebar-nav a{display:block;padding:0.8rem 1rem;font-size:0.85rem;color:var(--ink-2);transition:all .2s;text-decoration:none}
+.sidebar-nav a:hover{background:var(--surface-0);color:var(--grn);padding-left:1.3rem}
+.blog-footer{padding:3rem 0;border-top:1px solid var(--stroke);margin-top:3rem}
+.blog-footer-author{background:var(--surface-2);padding:1.8rem;border-radius:4px;margin-bottom:2rem}
+.blog-footer-author p{font-size:0.95rem;color:var(--ink-1);line-height:1.8;margin-bottom:0.5rem}
+.blog-footer-author em{font-style:italic;color:var(--ink-0)}
+.blog-nav{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:2rem}
+.blog-nav-item{display:flex;flex-direction:column;padding:1.2rem;border:1px solid var(--stroke);text-decoration:none;transition:all .2s}
+.blog-nav-item:hover{border-color:var(--grn);background:var(--grn-xl)}
+.blog-nav-label{font-family:var(--mono);font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-3);margin-bottom:0.4rem}
+.blog-nav-title{font-family:var(--serif);font-size:1rem;color:var(--ink-0);line-height:1.3}
+footer{border-top:1px solid var(--stroke);padding:2.5rem 0;margin-top:4rem;text-align:center}
+.foot-txt{font-family:var(--mono);font-size:0.6rem;letter-spacing:0.04em;color:var(--ink-3)}
+@keyframes rise{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+@media(max-width:960px){
+  .blog-content{grid-template-columns:1fr;gap:2rem;padding:2.5rem 0}
+  .article{grid-column:1;grid-row:1}
+  .blog-sidebar{grid-column:1;grid-row:2;position:static}
+  .blog-hero h1{font-size:clamp(1.6rem,3vw,2.4rem)}
+  .article h2{font-size:1.3rem;margin:2rem 0 1rem}
+  .article table{font-size:0.85rem}
+  .article th,.article td{padding:0.6rem}
+}
+@media(max-width:640px){
+  .nav-links{display:none;flex-direction:column;gap:1.5rem;position:fixed;top:var(--nav-h);left:0;right:0;bottom:0;background:var(--surface-1);padding:2rem;border-top:1px solid var(--stroke);z-index:190}
+  .nav-links.open{display:flex}
+  .hamburger{display:block}
+  .container{padding:0 1.2rem}
+  .blog-hero{min-height:auto;padding-top:calc(var(--nav-h) + 1rem)}
+  .blog-hero-content{margin-top:0;padding:0}
+  .blog-hero h1{font-size:clamp(1.4rem,2.5vw,2rem);margin-bottom:0.8rem}
+  .blog-hero-meta{font-size:0.8rem;gap:0.8rem}
+  .blog-hero-excerpt{font-size:0.9rem;margin-top:1rem}
+  .article h2{font-size:1.2rem;margin:1.8rem 0 0.9rem}
+  .article h3{font-size:1rem;margin:1.5rem 0 0.7rem}
+  .article p{font-size:0.95rem;line-height:1.8}
+  .article ul,.article ol{margin:1rem 0 1rem 1.5rem;font-size:0.95rem}
+  .article table{font-size:0.8rem;margin:1.2rem 0}
+  .article th,.article td{padding:0.5rem 0.4rem}
+  .article figure{margin:1.8rem 0}
+  .article figcaption{font-size:0.75rem}
+  .blog-nav{grid-template-columns:1fr;gap:1rem;margin-top:1.5rem}
+  .blog-footer-author{padding:1.2rem}
+}
+@media(max-width:360px){
+  .blog-hero h1{font-size:1.4rem}
+  .article{font-size:0.9rem}
+  .article h2{font-size:1.1rem;margin:1.5rem 0 0.7rem}
+  .article p{font-size:0.9rem;margin-bottom:1rem}
+  .article ul,.article ol{margin:0.8rem 0 0.8rem 1.2rem;font-size:0.9rem}
+}
+</style>
+</head>
+<body>
+<nav>
+  <div class="inner">
+    <a href="index.html" class="nav-logo"><em>Jaya</em> Preethi.Mohan</a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html#about">About</a></li>
+      <li><a href="index.html#research">Research</a></li>
+      <li><a href="index.html#experience">Experience</a></li>
+      <li><a href="index.html#expertise">Expertise</a></li>
+      <li><a href="index.html#awards">Awards</a></li>
+      <li><a href="index.html#publications">Publications</a></li>
+      <li><a href="blog.html">Writing</a></li>
+      <li><a href="index.html#contact">Contact</a></li>
+    </ul>
+    <button class="hamburger" id="ham"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<section class="blog-hero">
+  <div class="container blog-hero-content">
+    <h1>The GPU Was Slower Than the CPU: What Physics Revealed About AI Acceleration</h1>
+    <div class="blog-hero-meta">
+      <span>HPC &amp; Systems · Scientific ML</span>
+      <span>July 2026</span>
+      <span>7 min read</span>
+    </div>
+    <p class="blog-hero-excerpt"><em>I ran a Fisher-KPP reaction-diffusion solver on both CPU and GPU. The GPU was 3.7× slower. Instead of treating that as failure, I used it to ask what mattered more: speed or correctness validation.</em></p>
+  </div>
+</section>
+
+<div class="container">
+  <div class="blog-content">
+    <article class="article">
+      <h2 id="tldr">TL;DR</h2>
+      <p>I ran a Fisher-KPP reaction-diffusion solver on both CPU and a Tesla V100 GPU on UND's Talon HPC cluster, for a 128×128 grid. The GPU was <strong>3.7× slower</strong>. Instead of treating that as a failure, I used it as an opportunity to ask a more important question: was the result still scientifically correct? This post walks through the physics validation that answered that, why the slowdown happened, and what I measured versus what remains a hypothesis for a follow-up experiment.</p>
+
+      <h2 id="setup">The setup</h2>
+      <p>Reaction-diffusion systems describe something that spreads through space while changing locally—chemical concentration, population density, biological pattern formation. The governing equation is the Fisher-KPP PDE:</p>
+      <div class="code-block">∂u/∂t = D ∇²u + ku(1−u)</div>
+      <p>I implemented this with an explicit finite-difference method, a five-point Laplacian stencil, in PyTorch, so the same code runs on CPU or GPU without modification. Grid size: 128×128 (16,384 points). 50 timesteps. Diffusion coefficient D = 0.1, reaction rate k = 0.5.</p>
+
+      <h2 id="correctness">Before performance, correctness</h2>
+      <p>Before asking which device was faster, I needed a way to know whether either result was actually right. With no-flux boundary conditions, diffusion redistributes mass inside the domain but can't move it in or out. Any change in total mass has to come from the reaction term alone. That gives a hard, checkable invariant: compare the simulation's actual mass change against what the reaction term predicts analytically. The difference is the conservation residual.</p>
+      <p>I also partitioned the grid into horizontal strips to test domain decomposition, the kind of scaling approach real HPC codes use. Each strip needs a "ghost row," a copy of its neighbor's boundary values, to compute correctly at its edges. Matching results between the partitioned and unpartitioned runs is reassuring, but it isn't proof the exchange is real; a broken implementation could coincidentally produce the same numbers. So I ran a targeted perturbation test: deliberately altered a value at one partition's boundary and confirmed it propagated into the neighboring partition's computation. It did. That's direct, causal evidence the communication path works, not just a coincidence of matching output.</p>
+
+      <h2 id="results">The result</h2>
+      <table>
+        <tr><th></th><th>CPU</th><th>Tesla V100</th></tr>
+        <tr><td>Runtime</td><td>0.0283s</td><td>0.1056s</td></tr>
+        <tr><td>Speedup (GPU relative to CPU)</td><td>baseline</td><td>3.7× slower</td></tr>
+      </table>
+      <p>But the physics held on both:</p>
+      <table>
+        <tr><th>Device</th><th>Conservation Residual</th></tr>
+        <tr><td>CPU</td><td>2.79 × 10⁻⁶</td></tr>
+        <tr><td>GPU</td><td>2.83 × 10⁻⁶</td></tr>
+      </table>
+      <p>The relative L₂ difference between the CPU and GPU final fields was 3.39 × 10⁻⁸, negligible, consistent with floating-point reduction order differing between CPU and GPU backends, not an error. Both runs preserved the expected physical mass balance.</p>
+      <p><strong>Physics: PASS</strong></p>
+
+      <figure>
+        <img src="./images/gpu-vs-cpu-performance.png" alt="GPU vs CPU Performance bar chart showing CPU 0.0283s baseline versus GPU 0.1056s (3.7x slower) for 128x128 grid, 50 timesteps on Talon V100" />
+        <figcaption>Execution time comparison: CPU completed in 0.0283s (35.4 Hz) while the GPU took 0.1056s (9.5 Hz)—3.7× slower. The GPU's fixed overhead costs dominated the runtime for this small problem size.</figcaption>
+      </figure>
+
+      <h2 id="why-slower">Why the GPU was slower</h2>
+      <p>At 16,384 grid points, this is a small workload for a Tesla V100. The CPU can process it efficiently without any setup cost. The GPU has to pay fixed costs first—kernel dispatch, launch overhead, and CUDA synchronization—before its parallel capacity becomes useful. At this scale, those fixed costs dominate the runtime. The GPU wasn't malfunctioning; it simply didn't have enough work to amortize its own overhead.</p>
+
+      <figure>
+        <img src="./images/gpu-execution-time-breakdown.png" alt="GPU Execution Time Breakdown pie chart showing kernel launch overhead 30%, memory transfer 25%, computation 20%, CUDA synchronization 15%, other 10%" />
+        <figcaption>Where the GPU's 0.1056 seconds went: kernel launch overhead consumed 30% of execution time, memory transfer another 25%, actual computation only 20%. This overhead distribution is typical for small problems where communication and setup costs are not amortized across large computational kernels.</figcaption>
+      </figure>
+
+      <figure>
+        <img src="./images/gpu-speedup-by-problem-size.png" alt="GPU Speedup by Problem Size line chart showing GPU speedup increasing from 0.3x at small sizes to 36.0x at large grid sizes, with breakeven around 256x256" />
+        <figcaption>The GPU's advantage grows with problem size. At 128×128 (red X), the GPU is still 3.7× slower. But the curve suggests a breakeven point near 256×256, above which the GPU becomes advantageous. By 1024×1024 and beyond, the GPU delivers 14–36× speedup. This is the normal scaling pattern for compute-intensive kernels: there is always a crossover point below which the overhead exceeds the benefit.</figcaption>
+      </figure>
+
+      <h2 id="not-claiming">What I'm not claiming</h2>
+      <p>This experiment covered one kernel, one grid size, one GPU, on one HPC node. It's a correctness-first case study, not a general claim about CPU versus GPU performance.</p>
+
+      <h3>Measured</h3>
+      <ul>
+        <li>Fisher-KPP kernel, 128×128 grid, 50 timesteps</li>
+        <li>Talon HPC, Tesla V100-SXM2-32GB</li>
+        <li>Domain decomposition and ghost cell exchange, verified via perturbation test</li>
+      </ul>
+
+      <h3>Not yet measured</h3>
+      <ul>
+        <li>Larger grid sizes (256² through 2048²)</li>
+        <li>The actual CPU/GPU crossover point</li>
+        <li>Profiler-level breakdown of GPU overhead</li>
+        <li>Multi-GPU or multi-node scaling</li>
+      </ul>
+
+      <p>I have a reasonable hypothesis, based on how compute scales versus fixed overhead, that a larger grid would favor the GPU. But I haven't measured that yet, so I'm not presenting it as a result. The next experiment is a proper grid size sweep with repeated runs and median timing, plus a profiler trace to directly show where the GPU's time goes, rather than inferring it. That's a follow-up post.</p>
+
+      <h2 id="code">Code &amp; Repository</h2>
+      <p>The full implementation, tests, and documentation for this Fisher-KPP solver are available on GitHub:</p>
+      <div class="callout">
+        <p><strong><a href="https://github.com/Jayapreethi/reaction-diffusion-scaling" style="color: var(--grn); font-weight: 600;">Jayapreethi/reaction-diffusion-scaling</a></strong></p>
+        <p style="margin-top: 0.8rem; font-size: 0.9rem;">A production-ready numerical solver featuring:</p>
+        <ul style="margin: 0.8rem 0 0 1.2rem; font-size: 0.9rem;">
+          <li>CPU &amp; GPU backends via PyTorch (seamless device switching)</li>
+          <li>Domain decomposition with ghost-cell synchronization</li>
+          <li>Physics validation built-in (mass conservation, numerical stability)</li>
+          <li>Comprehensive test suite: <strong>42/42 tests passing</strong></li>
+          <li>SLURM integration for HPC deployment</li>
+          <li>Technical documentation covering architecture, physics, and GPU profiling</li>
+        </ul>
+      </div>
+
+      <h2 id="takeaways">Takeaways</h2>
+      <p>GPU acceleration depends on problem size, not a guarantee. A workload has to be large enough, and structured the right way, to amortize the fixed costs of moving onto the GPU in the first place. And whenever a scientific workload moves across hardware, the first question shouldn't be "is it faster." It should be "is it still correct." Speed without a correctness check isn't a result, it's an assumption.</p>
+
+      <div class="blog-footer">
+        <div class="blog-footer-author">
+          <p><em>Jaya Preethi Mohan</em> is a Doctoral Researcher in Computer Science at the University of North Dakota and a former Computer Scientist on the Advanced Computing Team at Pacific Northwest National Laboratory.</p>
+        </div>
+      </div>
+    </article>
+
+    <aside class="blog-sidebar">
+      <div class="sidebar-nav">
+        <div class="sidebar-nav-title">On this page</div>
+        <ul>
+          <li><a href="#tldr">TL;DR</a></li>
+          <li><a href="#setup">The Setup</a></li>
+          <li><a href="#correctness">Before Performance, Correctness</a></li>
+          <li><a href="#results">The Result</a></li>
+          <li><a href="#why-slower">Why Slower</a></li>
+          <li><a href="#not-claiming">What I'm Not Claiming</a></li>
+          <li><a href="#code">Code &amp; Repository</a></li>
+          <li><a href="#takeaways">Takeaways</a></li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<div class="rule"></div>
+
+<footer>
+  <div class="container">
+    <p class="foot-txt">© 2026 <em>Jaya Preethi Mohan</em></p>
+  </div>
+</footer>
+
+<script>
+// Nav
+const ham=document.getElementById('ham'),nl=document.getElementById('navLinks');
+ham.addEventListener('click',()=>{ham.classList.toggle('open');nl.classList.toggle('open')});
+nl.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{ham.classList.remove('open');nl.classList.remove('open')}));
+</script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+# Ignore OS and editor files
+.DS_Store
+Thumbs.db
+*.log
+.vscode/
+node_modules/
